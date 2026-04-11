@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, 
-  LogOut, ChevronsLeft, Calendar
+  LogOut, ChevronsLeft, Calendar, Database
 } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -50,6 +50,11 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
 
+          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+            <Database size={20} className="text-slate-400" />
+            {isSidebarOpen && <span>Master</span>}
+          </Link>
+
           {/* DROPDOWN MENU ITEM (Academics) */}
           <div>
             <button 
@@ -78,7 +83,7 @@ const DashboardLayout = () => {
             )}
           </div>
 
-          <Link to="/user-profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
+          <Link to="#" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
             <Users size={20} className={isActive('/user-profile') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Users & Profile</span>}
           </Link>

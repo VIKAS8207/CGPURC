@@ -2,14 +2,18 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
-import LoginPage from "./pages/login";
-import ForgotPassword from "./pages/ForgotPassword";
-import AdminDashboard from "./pages/AdminDashboard";
-import UserProfile from "./pages/UserProfile";
+import LoginPage from "./pages/auth/login";
+import ForgotPassword from "./pages/auth/ForgotPassword";
+
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
+import UserProfile from "./pages/user/UserProfile";
 
 // Layouts
 import DashboardLayout from "./components/DashboardLayout"; // Admin Blue Theme
 import UserLayout from "./components/UserLayout";           // User Orange Theme
+
+
 
 function App() {
   return (
