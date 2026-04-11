@@ -6,6 +6,10 @@ import LoginPage from "./pages/auth/login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminMaster from './pages/admin/AdminMaster';
+
+// The new Academic Year page!
+import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
 
 import UserProfile from "./pages/user/UserProfile";
 
@@ -28,6 +32,8 @@ function App() {
           {/* Admin Routes (Wrapped in Blue Layout) */}
           <Route element={<DashboardLayout />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/master" element={<AdminMaster />} />
+            <Route path="/admin/master/academic-year" element={<AcademicYearMaster />} />
             {/* Add more admin pages here like /admin-settings, /payroll, etc. */}
           </Route>
 

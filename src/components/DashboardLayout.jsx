@@ -45,13 +45,13 @@ const DashboardLayout = () => {
             {isSidebarOpen ? 'Main Menu' : '•••'}
           </p>
 
-          <Link to="/admin-dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin-dashboard') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
+          <Link to="/admin-dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin-dashboard') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <LayoutDashboard size={20} className={isActive('/admin-dashboard') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
 
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
-            <Database size={20} className="text-slate-400" />
+          <Link to="/admin/master" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/master') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <Database size={20} className={isActive('/admin/master') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Master</span>}
           </Link>
 
@@ -62,7 +62,7 @@ const DashboardLayout = () => {
                 setIsAcademicsOpen(!isAcademicsOpen);
                 if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
               }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <BookOpen size={20} className="text-slate-400" />
@@ -83,12 +83,12 @@ const DashboardLayout = () => {
             )}
           </div>
 
-          <Link to="#" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
+          <Link to="#" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <Users size={20} className={isActive('/user-profile') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Users & Profile</span>}
           </Link>
 
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
             <Calendar size={20} className="text-slate-400" />
             {isSidebarOpen && <span>Calendar</span>}
           </Link>
@@ -96,7 +96,7 @@ const DashboardLayout = () => {
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-100">
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
             <Settings size={20} className="text-slate-400" />
             {isSidebarOpen && <span>Settings</span>}
           </Link>
