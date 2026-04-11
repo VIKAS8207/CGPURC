@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, 
-  LogOut, ChevronsLeft, Calendar, User
+  LogOut, ChevronsLeft, Calendar, User, CalendarDays
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -33,7 +33,7 @@ const UserLayout = () => {
           </div>
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="p-2 text-slate-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
+            className="p-2 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
           >
             {isSidebarOpen ? <ChevronsLeft size={20} /> : <Menu size={20} />}
           </button>
@@ -45,9 +45,14 @@ const UserLayout = () => {
             {isSidebarOpen ? 'Main Menu' : '•••'}
           </p>
 
-          <Link to="/user-dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-dashboard') ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
-            <LayoutDashboard size={20} className={isActive('/user-dashboard') ? 'text-orange-500' : 'text-slate-400'} />
+          <Link to="/user-dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-dashboard') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <LayoutDashboard size={20} className={isActive('/user-dashboard') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Dashboard</span>}
+          </Link>
+
+          <Link to="/user-academic-year" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-academic-year') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <CalendarDays size={20} className={isActive('/user-academic-year') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Academic Year</span>}
           </Link>
 
           {/* DROPDOWN MENU ITEM (Academics) */}
@@ -57,7 +62,7 @@ const UserLayout = () => {
                 setIsAcademicsOpen(!isAcademicsOpen);
                 if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
               }}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
               <div className="flex items-center gap-3">
                 <BookOpen size={20} className="text-slate-400" />
@@ -78,12 +83,12 @@ const UserLayout = () => {
             )}
           </div>
 
-          <Link to="/user-profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-orange-50 text-orange-600 font-semibold' : 'text-slate-600 hover:bg-slate-50'}`}>
-            <Users size={20} className={isActive('/user-profile') ? 'text-orange-500' : 'text-slate-400'} />
+          <Link to="/user-profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <Users size={20} className={isActive('/user-profile') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Users & Profile</span>}
           </Link>
 
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
             <Calendar size={20} className="text-slate-400" />
             {isSidebarOpen && <span>Calendar</span>}
           </Link>
@@ -91,7 +96,7 @@ const UserLayout = () => {
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-100">
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
             <Settings size={20} className="text-slate-400" />
             {isSidebarOpen && <span>Settings</span>}
           </Link>
@@ -119,7 +124,7 @@ const UserLayout = () => {
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-orange-500 transition-colors">
+            <button className="relative p-2 text-slate-400 hover:text-orange-600 transition-colors">
               <Bell size={20} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
             </button>

@@ -66,7 +66,7 @@ const DashboardLayout = () => {
             >
               <div className="flex items-center gap-3">
                 <BookOpen size={20} className="text-slate-400" />
-                {isSidebarOpen && <span>Academics</span>}
+                {isSidebarOpen && <span>Organisation Settings</span>}
               </div>
               {isSidebarOpen && (
                 isAcademicsOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
@@ -76,9 +76,19 @@ const DashboardLayout = () => {
             {/* Dropdown Content */}
             {isSidebarOpen && isAcademicsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
-                <Link to="#" className="block py-2 text-sm text-slate-500 hover:text-blue-600 transition-colors">Courses</Link>
-                <Link to="#" className="block py-2 text-sm text-slate-500 hover:text-blue-600 transition-colors">Departments</Link>
-                <Link to="#" className="block py-2 text-sm text-slate-500 hover:text-blue-600 transition-colors">Exams</Link>
+                <Link 
+                  to="/admin/master/financial-config" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/master/financial-config') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Penalty Percentage
+                </Link>
+                
+                <Link 
+                  to="/admin/master/due-date-config" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/master/due-date-config') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Due Date
+                </Link>
               </div>
             )}
           </div>

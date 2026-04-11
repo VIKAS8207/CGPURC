@@ -10,8 +10,11 @@ import AdminMaster from './pages/admin/AdminMaster';
 
 // The new Academic Year page!
 import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
-
+import UserAcademicYear from "./pages/user/UserAcademicYear";
 import UserProfile from "./pages/user/UserProfile";
+
+import FinancialConfig from "./pages/admin/master/FinancialConfig";
+import DueDateConfig from "./pages/admin/master/DueDateConfig";
 
 // Layouts
 import DashboardLayout from "./components/DashboardLayout"; // Admin Blue Theme
@@ -34,11 +37,14 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/master" element={<AdminMaster />} />
             <Route path="/admin/master/academic-year" element={<AcademicYearMaster />} />
+            <Route path="/admin/master/financial-config" element={<FinancialConfig />} />
+            <Route path="/admin/master/due-date-config" element={<DueDateConfig />} />
             {/* Add more admin pages here like /admin-settings, /payroll, etc. */}
           </Route>
 
           {/* User Routes (Wrapped in Orange Layout) */}
           <Route element={<UserLayout />}>
+            <Route path="/user-academic-year" element={<UserAcademicYear />} />
             <Route path="/user-profile" element={<UserProfile />} />
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>
