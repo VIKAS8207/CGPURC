@@ -45,7 +45,7 @@ const AdminMaster = () => {
       count: "108 Subjects",
       color: "text-amber-600", 
       bg: "bg-amber-50",
-      link: "#"
+      link: "/admin/master/branch-course"
     },
     { 
       title: "Department Master", 

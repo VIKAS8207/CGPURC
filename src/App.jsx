@@ -11,6 +11,7 @@ import AdminMaster from './pages/admin/AdminMaster';
 // The new Academic Year page!
 import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
 import AdminCourseMaster from './pages/admin/master/AdminCourseMaster';
+import BranchCourseMaster from "./pages/admin/master/BranchCourseMaster";
 import UserAcademicYear from "./pages/user/UserAcademicYear";
 import AdminOfficeBearer from './pages/admin/AdminOfficeBearer';
 import UserProfile from "./pages/user/UserProfile";
@@ -40,6 +41,7 @@ function App() {
             <Route path="/admin/master" element={<AdminMaster />} />
             <Route path="/admin/master/academic-year" element={<AcademicYearMaster />} />
             <Route path="/admin/master/course-master" element={<AdminCourseMaster />} />
+            <Route path="/admin/master/branch-course" element={<BranchCourseMaster />} />
             <Route path="/admin/master/financial-config" element={<FinancialConfig />} />
             <Route path="/admin/master/due-date-config" element={<DueDateConfig />} />
             <Route path="/admin/office-bearers" element={<AdminOfficeBearer />} />
