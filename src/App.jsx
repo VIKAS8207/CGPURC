@@ -10,7 +10,9 @@ import AdminMaster from './pages/admin/AdminMaster';
 
 // The new Academic Year page!
 import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
+import AdminCourseMaster from './pages/admin/master/AdminCourseMaster';
 import UserAcademicYear from "./pages/user/UserAcademicYear";
+import AdminOfficeBearer from './pages/admin/AdminOfficeBearer';
 import UserProfile from "./pages/user/UserProfile";
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
@@ -37,8 +39,10 @@ function App() {
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/master" element={<AdminMaster />} />
             <Route path="/admin/master/academic-year" element={<AcademicYearMaster />} />
+            <Route path="/admin/master/course-master" element={<AdminCourseMaster />} />
             <Route path="/admin/master/financial-config" element={<FinancialConfig />} />
             <Route path="/admin/master/due-date-config" element={<DueDateConfig />} />
+            <Route path="/admin/office-bearers" element={<AdminOfficeBearer />} />
             {/* Add more admin pages here like /admin-settings, /payroll, etc. */}
           </Route>
 

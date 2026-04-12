@@ -36,10 +36,10 @@ const AdminMaster = () => {
       count: "24 Classes",
       color: "text-emerald-600", 
       bg: "bg-emerald-50",
-      link: "#"
+      link: "/admin/master/course-master"
     },
     { 
-      title: "Subject Master", 
+      title: "Branch (Sub-Course)", 
       desc: "Global subject list and categorizations", 
       icon: BookOpen, 
       count: "108 Subjects",
