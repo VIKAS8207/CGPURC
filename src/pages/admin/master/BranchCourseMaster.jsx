@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, Network, Plus, Search, Filter, 
   Trash2, X, BellRing, ChevronDown, ChevronLeft, 
-  ChevronRight, BookOpen, Layers, Eye
+  ChevronRight, BookOpen, Layers
 } from 'lucide-react';
 
 const BranchCourseMaster = () => {
+  const navigate = useNavigate();
   // --- UI STATES ---
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -92,7 +93,7 @@ const BranchCourseMaster = () => {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 relative max-w-6xl mx-auto">
+    <div className="animate-in fade-in duration-500 w-full">
       
       {/* SUCCESS NOTIFICATION */}
       {showNotification && (
@@ -114,19 +115,30 @@ const BranchCourseMaster = () => {
         </div>
       )}
 
-      {/* Breadcrumb */}
-      <div className="mb-6">
-        <Link to="/admin/master" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
-          <ArrowLeft size={16} /> Back to Master Settings
-        </Link>
+      {/* Simple Back Button */}
+      <button 
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-[#155DFC] transition-colors mb-3"
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
+
+      {/* Breadcrumb Path */}
+      <div className="mb-8 flex items-center gap-2 text-sm font-medium text-slate-500">
+        <Link to="/admin-dashboard" className="hover:text-[#155DFC] transition-colors">Admin Dashboard</Link>
+        <ChevronRight size={14} className="text-slate-400" />
+        <Link to="/admin/master" className="hover:text-[#155DFC] transition-colors">Master Configuration</Link>
+        <ChevronRight size={14} className="text-slate-400" />
+        <span className="text-slate-900 font-semibold">Branch Mapping Master</span>
       </div>
 
-      {/* Header */}
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 rounded-lg">
-              <Network className="text-indigo-600" size={24} />
+            <div className="p-2 bg-[#155DFC]/10 rounded-lg">
+              <Network className="text-[#155DFC]" size={24} />
             </div>
             Branch Mapping Master
           </h1>
@@ -146,7 +158,7 @@ const BranchCourseMaster = () => {
       {isFormOpen && (
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 animate-in slide-in-from-top-4 fade-in duration-300 overflow-hidden">
           <div className="bg-slate-50/50 border-b border-slate-100 p-4 px-6 flex items-center gap-3">
-            <Layers className="text-blue-600" size={20} />
+            <Layers className="text-[#155DFC]" size={20} />
             <h2 className="text-lg font-bold text-slate-800">Configure Course Branches</h2>
           </div>
           
@@ -160,7 +172,7 @@ const BranchCourseMaster = () => {
               <select 
                 value={selectedCourse}
                 onChange={(e) => setSelectedCourse(e.target.value)}
-                className="w-full md:w-1/2 px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-700 cursor-pointer appearance-none"
+                className="w-full md:w-1/2 px-4 py-3 bg-white border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-700 cursor-pointer appearance-none"
                 required
               >
                 <option value="" disabled>-- Select a Course from Master --</option>
@@ -171,7 +183,7 @@ const BranchCourseMaster = () => {
             </div>
 
             {/* Step 2: Dynamic Branch Inputs */}
-            <div className="mb-6 pl-2 border-l-2 border-dashed border-blue-200 ml-4 relative">
+            <div className="mb-6 pl-2 border-l-2 border-dashed border-slate-300 ml-4 relative">
               <label className="block text-sm font-bold text-slate-800 mb-4 pl-4">
                 2. Enter Branches / Specializations
               </label>
@@ -179,14 +191,14 @@ const BranchCourseMaster = () => {
               <div className="space-y-3 pl-4">
                 {branches.map((branch, index) => (
                   <div key={branch.id} className="flex items-center gap-3 animate-in slide-in-from-left-2 duration-300">
-                    <div className="w-6 h-[2px] bg-blue-200"></div>
+                    <div className="w-6 h-[2px] bg-slate-300"></div>
                     <input 
                       type="text" 
                       placeholder={`e.g. ${index === 0 ? 'Computer Science' : 'Civil Engineering'}`}
                       value={branch.value}
                       onChange={(e) => handleBranchChange(branch.id, e.target.value)}
-                      className="flex-1 md:w-1/2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-slate-800"
-                      required={index === 0} // Only first is strictly required
+                      className="flex-1 md:w-1/2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-800"
+                      required={index === 0}
                     />
                     {branches.length > 1 && (
                       <button 
@@ -205,7 +217,7 @@ const BranchCourseMaster = () => {
                 <button 
                   type="button"
                   onClick={handleAddBranchField}
-                  className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-sm font-bold text-[#155DFC] hover:text-[#155DFC] bg-[#155DFC]/10 hover:bg-[#155DFC]/20 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Plus size={16} /> Add Another Branch
                 </button>
@@ -223,7 +235,7 @@ const BranchCourseMaster = () => {
               </button>
               <button 
                 type="submit"
-                className="px-8 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-md active:scale-95 rounded-xl transition-all flex items-center gap-2"
+                className="px-8 py-2.5 text-sm font-bold text-white bg-[#155DFC] hover:bg-[#155DFC]/90 shadow-md active:scale-95 rounded-xl transition-all flex items-center gap-2"
               >
                 Save Mapping
               </button>
@@ -241,7 +253,7 @@ const BranchCourseMaster = () => {
             placeholder="Search mappings..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-sm"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all text-sm"
           />
         </div>
       </div>
@@ -262,7 +274,7 @@ const BranchCourseMaster = () => {
               <tr key={mapping.id} className="hover:bg-slate-50 transition-colors group">
                 <td className="py-4 px-6">
                   <div className="font-bold text-slate-800 flex items-center gap-2">
-                    <BookOpen size={16} className="text-blue-500" />
+                    
                     {mapping.courseName}
                   </div>
                 </td>
@@ -274,7 +286,7 @@ const BranchCourseMaster = () => {
                 <td className="py-4 px-6">
                   <div className="flex flex-wrap gap-2">
                     {mapping.branches.slice(0, 3).map((branch, idx) => (
-                      <span key={idx} className="px-2.5 py-1 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold rounded-lg">
+                      <span key={idx} className="px-2.5 py-1 bg-[#155DFC]/5 border border-[#155DFC]/20 text-[#155DFC] text-xs font-semibold rounded-lg">
                         {branch}
                       </span>
                     ))}
@@ -289,7 +301,7 @@ const BranchCourseMaster = () => {
                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button 
                       onClick={() => handleDelete(mapping.id)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
                       title="Delete Mapping"
                     >
                       <Trash2 size={18} />
@@ -322,7 +334,7 @@ const BranchCourseMaster = () => {
               <button 
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${currentPage === i + 1 ? 'bg-[#155DFC] text-white' : 'text-slate-600 hover:bg-slate-100'}`}
               >
                 {i + 1}
               </button>

@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, 
-  LogOut, ChevronsLeft, Calendar, User, CalendarDays
+  LogOut, ChevronsLeft, Calendar, User, CalendarDays, UploadCloud
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -53,6 +53,11 @@ const UserLayout = () => {
           <Link to="/user-academic-year" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-academic-year') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <CalendarDays size={20} className={isActive('/user-academic-year') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Academic Year</span>}
+          </Link>
+
+          <Link to="/user/uploads" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <UploadCloud size={20} className={isActive('/user/uploads') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Uplods</span>}
           </Link>
 
           {/* DROPDOWN MENU ITEM (Academics) */}

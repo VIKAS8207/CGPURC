@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
-  ArrowLeft, Landmark, Save, History, 
-  User, Clock, Percent, ShieldCheck, BellRing, X, CheckCircle2
+  ArrowLeft, ArrowRight, Landmark, Save, History, 
+  User, Percent, ShieldCheck, BellRing, X, ChevronRight
 } from 'lucide-react';
 
 const FinancialConfig = () => {
+  const navigate = useNavigate();
   // --- STATES ---
   const [levyRate, setLevyRate] = useState("1.0");
   const [isSaving, setIsSaving] = useState(false);
@@ -66,14 +67,14 @@ const FinancialConfig = () => {
   };
 
   return (
-    <div className="animate-in fade-in duration-500 relative max-w-6xl mx-auto">
+    <div className="animate-in fade-in duration-500 w-full">
       
       {/* SUCCESS NOTIFICATION TOAST */}
       {showNotification && (
         <div className="fixed top-6 right-6 z-[60] animate-in slide-in-from-top-4 fade-in duration-300">
-          <div className="bg-white border-l-4 border-l-emerald-500 shadow-xl rounded-xl p-4 max-w-md flex items-start gap-4">
-            <div className="p-2 bg-emerald-50 rounded-lg shrink-0">
-              <ShieldCheck className="text-emerald-600" size={20} />
+          <div className="bg-white border-l-4 border-l-[#155DFC] shadow-xl rounded-xl p-4 max-w-md flex items-start gap-4">
+            <div className="p-2 bg-[#155DFC]/10 rounded-lg shrink-0">
+              <ShieldCheck className="text-[#155DFC]" size={20} />
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900">Configuration Saved</h3>
@@ -88,18 +89,29 @@ const FinancialConfig = () => {
         </div>
       )}
 
-      {/* Breadcrumb */}
-      <div className="mb-6">
-        <Link to="/admin/master" className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
-          <ArrowLeft size={16} /> Back to Master Settings
-        </Link>
+      {/* Simple Back Button */}
+      <button 
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-[#155DFC] transition-colors mb-3"
+      >
+        <ArrowLeft size={16} />
+        Back
+      </button>
+
+      {/* Breadcrumb Path */}
+      <div className="mb-8 flex items-center gap-2 text-sm font-medium text-slate-500">
+        <Link to="/admin-dashboard" className="hover:text-[#155DFC] transition-colors">Admin Dashboard</Link>
+        <ChevronRight size={14} className="text-slate-400" />
+        <Link to="/admin/master" className="hover:text-[#155DFC] transition-colors">Master Configuration</Link>
+        <ChevronRight size={14} className="text-slate-400" />
+        <span className="text-slate-900 font-semibold">Financial Config</span>
       </div>
 
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <Landmark className="text-blue-600" size={24} />
+          <div className="p-2 bg-[#155DFC]/10 rounded-lg">
+            <Landmark className="text-[#155DFC]" size={24} />
           </div>
           Financial Configuration
         </h1>
@@ -134,7 +146,7 @@ const FinancialConfig = () => {
                     max="100"
                     value={levyRate}
                     onChange={(e) => setLevyRate(e.target.value)}
-                    className="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-bold text-slate-900 text-lg"
+                    className="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-bold text-slate-900 text-lg"
                     required
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
@@ -146,7 +158,7 @@ const FinancialConfig = () => {
               <button 
                 type="submit"
                 disabled={isSaving}
-                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white px-6 py-3 rounded-xl font-semibold shadow-md active:scale-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-black text-white px-6 py-3 rounded-xl font-bold shadow-md active:scale-95 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {isSaving ? (
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -160,20 +172,21 @@ const FinancialConfig = () => {
           </div>
           
           {/* Info Card */}
-          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-            <h3 className="text-sm font-bold text-blue-900 flex items-center gap-2 mb-2">
-              <ShieldCheck size={16} className="text-blue-600" /> Security Notice
+          <div className="bg-[#155DFC]/5 border border-[#155DFC]/20 rounded-2xl p-5">
+            <h3 className="text-sm font-bold text-[#155DFC] flex items-center gap-2 mb-2">
+              <ShieldCheck size={16} className="text-[#155DFC]" /> Security Notice
             </h3>
-            <p className="text-xs text-blue-800/80 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Modifying financial parameters takes effect immediately on all new transactions. All changes are permanently recorded in the system audit log and cannot be deleted.
             </p>
           </div>
         </div>
 
 
-        {/* RIGHT COLUMN: THE AUDIT TRAIL */}
+        {/* RIGHT COLUMN: THE AUDIT TRAIL TABLE */}
         <div className="lg:col-span-2">
-          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden h-full flex flex-col">
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+            
             <div className="p-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <History className="text-slate-400" size={18} />
@@ -184,60 +197,54 @@ const FinancialConfig = () => {
               </span>
             </div>
             
-            <div className="p-6 flex-1 overflow-y-auto">
+            <div className="overflow-x-auto flex-1">
               {auditLogs.length === 0 ? (
                 <div className="text-center py-10">
-                  <p className="text-slate-500 text-sm">No historical changes found.</p>
+                  <p className="text-slate-500 text-sm font-medium">No historical changes found.</p>
                 </div>
               ) : (
-                <div className="relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
-                  
-                  {auditLogs.map((log, index) => (
-                    <div key={log.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active mb-8 last:mb-0">
-                      
-                      {/* Timeline Dot */}
-                      <div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm ${index === 0 ? 'bg-blue-500' : 'bg-slate-300'}`}>
-                        {index === 0 ? <CheckCircle2 size={16} className="text-white" /> : <Clock size={16} className="text-white" />}
-                      </div>
-                      
-                      {/* Log Card */}
-                      <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-slate-200 bg-white shadow-sm group-hover:border-blue-200 transition-colors">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className={`text-xs font-bold px-2 py-1 rounded-md ${index === 0 ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-600'}`}>
-                            {log.date}
-                          </span>
-                          <span className="text-xs font-medium text-slate-400">{log.time}</span>
-                        </div>
-                        
-                        <div className="flex items-center gap-3 mb-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                          <div className="flex-1 text-center">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-0.5">Previous</p>
-                            <p className="text-base font-semibold text-slate-600 line-through decoration-slate-400">{log.oldValue}</p>
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Date & Time</th>
+                      <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Modification</th>
+                      <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Changed By</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {auditLogs.map((log) => (
+                      <tr key={log.id} className="hover:bg-slate-50 transition-colors group">
+                        <td className="py-4 px-6">
+                          <div className="font-bold text-slate-800 text-sm">{log.date}</div>
+                          <div className="text-xs font-medium text-slate-500 mt-0.5">{log.time}</div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-2.5">
+                            <span className="text-sm font-semibold text-slate-400 line-through">{log.oldValue}</span>
+                            <ArrowRight size={14} className="text-[#155DFC]" />
+                            <span className="text-sm font-bold text-[#155DFC] bg-[#155DFC]/10 px-2 py-0.5 rounded border border-[#155DFC]/20">
+                              {log.newValue}
+                            </span>
                           </div>
-                          <ArrowLeft size={16} className="text-slate-400 transform rotate-180 shrink-0" />
-                          <div className="flex-1 text-center">
-                            <p className="text-[10px] font-bold text-blue-500 uppercase mb-0.5">Updated To</p>
-                            <p className="text-lg font-bold text-blue-700">{log.newValue}</p>
+                        </td>
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-slate-100 rounded-lg shrink-0 group-hover:bg-white group-hover:shadow-sm border border-transparent group-hover:border-slate-200 transition-all">
+                              <User size={14} className="text-slate-500" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold text-slate-800">{log.changedBy}</p>
+                              <p className="text-xs font-medium text-slate-500 mt-0.5">{log.role}</p>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="flex items-start gap-2 border-t border-slate-100 pt-3">
-                          <div className="p-1.5 bg-slate-100 rounded-md shrink-0">
-                            <User size={14} className="text-slate-500" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-slate-800">{log.changedBy}</p>
-                            <p className="text-xs text-slate-500">{log.role}</p>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-                  ))}
-                  
-                </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               )}
             </div>
+            
           </div>
         </div>
 

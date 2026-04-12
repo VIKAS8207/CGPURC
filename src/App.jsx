@@ -13,6 +13,10 @@ import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
 import AdminCourseMaster from './pages/admin/master/AdminCourseMaster';
 import BranchCourseMaster from "./pages/admin/master/BranchCourseMaster";
 import UserAcademicYear from "./pages/user/UserAcademicYear";
+import UserUploads from "./pages/user/UserUploads";
+import DegreeUpload from "./pages/user/uploadpages/DegreeUpload";
+import StudentDataUpload from "./pages/user/uploadpages/StudentUpload";
+import AcademicCalendarUpload from "./pages/user/uploadpages/AcademicCalendarUpload";
 import AdminOfficeBearer from './pages/admin/AdminOfficeBearer';
 import UserProfile from "./pages/user/UserProfile";
 
@@ -51,6 +55,10 @@ function App() {
           {/* User Routes (Wrapped in Orange Layout) */}
           <Route element={<UserLayout />}>
             <Route path="/user-academic-year" element={<UserAcademicYear />} />
+            <Route path="/user/uploads" element={<UserUploads />} />
+            <Route path="/user/uploads/degree" element={<DegreeUpload />} />
+            <Route path="/user/uploads/student-data" element={<StudentDataUpload />} />
+            <Route path="/user/uploads/academic-calendar" element={<AcademicCalendarUpload />} />
             <Route path="/user-profile" element={<UserProfile />} />
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>
