@@ -23,6 +23,8 @@ import UniversityBranchSetup from './pages/user/UniversityBranchSetup';
 import AcademicCalendarUpload from "./pages/user/uploadpages/AcademicCalendarUpload";
 import AdminOfficeBearer from './pages/admin/AdminOfficeBearer';
 import UserOfficeBearer from "./pages/user/UserOfficeBearer";
+import UserPayFees from "./pages/user/UserPayFees";
+import UserPaymentHistory from "./pages/user/UserPaymentHistory";
 import UserProfile from "./pages/user/UserProfile";
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
@@ -69,6 +71,8 @@ function App() {
             <Route path="/user/uploads/course-fee" element={<CourseFeeUpload />} />
             <Route path="/user/uploads/academic-calendar" element={<AcademicCalendarUpload />} />
             <Route path="/user/office-bearers" element={<UserOfficeBearer />} />
+            <Route path="/user/pay-fees" element={<UserPayFees />} />
+            <Route path="/user/payment-history" element={<UserPaymentHistory />} />
             <Route path="/user-profile" element={<UserProfile />} />
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>

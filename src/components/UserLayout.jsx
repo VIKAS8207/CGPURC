@@ -7,10 +7,12 @@ import {
 } from 'lucide-react';
 
 const UserLayout = () => {
+  // --- SIDEBAR STATES ---
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAcademicsOpen, setIsAcademicsOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
   
-  // --- STATE FOR ACADEMIC YEAR DROPDOWN ---
+  // --- NAVBAR STATES ---
   const [selectedYear, setSelectedYear] = useState("2025-26");
 
   const location = useLocation();
@@ -54,17 +56,17 @@ const UserLayout = () => {
             {isSidebarOpen && <span>Dashboard</span>}
           </Link>
 
-          {/* DROPDOWN MENU ITEM (Academics) */}
+          {/* ACADEMIC MASTERS DROPDOWN */}
           <div>
             <button 
               onClick={() => {
                 setIsAcademicsOpen(!isAcademicsOpen);
-                if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
+                if (!isSidebarOpen) setIsSidebarOpen(true);
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
               <div className="flex items-center gap-3">
-                < BookOpen size={20} className="text-slate-400" />
+                <BookOpen size={20} className="text-slate-400" />
                 {isSidebarOpen && <span>Academic Masters</span>}
               </div>
               {isSidebarOpen && (
@@ -72,7 +74,6 @@ const UserLayout = () => {
               )}
             </button>
             
-            {/* Dropdown Content */}
             {isSidebarOpen && isAcademicsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
                 <Link 
@@ -81,7 +82,6 @@ const UserLayout = () => {
                 >
                   Course Creation
                 </Link>
-                
                 <Link 
                   to="/university/branch-setup" 
                   className={`block py-2 text-sm transition-colors ${isActive('/university/branch-setup') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
@@ -107,10 +107,41 @@ const UserLayout = () => {
             {isSidebarOpen && <span>Office Bearer</span>}
           </Link>
 
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-            <HandCoins size={20} className="text-slate-400" />
-            {isSidebarOpen && <span>Pay 1% Fee</span>}
-          </Link>
+          {/* PAYMENT DROPDOWN */}
+          <div>
+            <button 
+              onClick={() => {
+                setIsPaymentOpen(!isPaymentOpen);
+                if (!isSidebarOpen) setIsSidebarOpen(true);
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <HandCoins size={20} className="text-slate-400" />
+                {isSidebarOpen && <span>Payment</span>}
+              </div>
+              {isSidebarOpen && (
+                isPaymentOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
+              )}
+            </button>
+            
+            {isSidebarOpen && isPaymentOpen && (
+              <div className="pl-11 pr-3 py-2 space-y-1">
+                <Link 
+                  to="/user/pay-fees" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/user/pay-fees') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Pay Fees
+                </Link>
+                <Link 
+                  to="/user/payment-history" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/user/payment-history') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Payment History
+                </Link>
+              </div>
+            )}
+          </div>
 
           <Link to="/user-profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <Users size={20} className={isActive('/user-profile') ? 'text-orange-600' : 'text-slate-400'} />
@@ -137,7 +168,6 @@ const UserLayout = () => {
         
         {/* Top Header */}
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8">
-          {/* Search Bar */}
           <div className="relative w-64">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input 
@@ -147,10 +177,7 @@ const UserLayout = () => {
             />
           </div>
 
-          {/* Right Header Actions */}
           <div className="flex items-center gap-6">
-            
-            {/* ENHANCED ACADEMIC YEAR SELECTOR */}
             <div className="flex items-center gap-3">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] hidden lg:block">
                 Academic Session
@@ -185,7 +212,6 @@ const UserLayout = () => {
           </div>
         </header>
 
-        {/* PAGE CONTENT GOES HERE (The Outlet) */}
         <main className="flex-1 overflow-y-auto p-8 relative">
           <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-orange-50/50 to-transparent pointer-events-none -z-10"></div>
           <Outlet /> 
