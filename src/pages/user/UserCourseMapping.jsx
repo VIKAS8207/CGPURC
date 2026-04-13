@@ -24,7 +24,7 @@ const UserCourseMapping = () => {
     shortCode: '', 
     courseType: '', 
     durationYears: '', 
-    durationSemesters: '' 
+    durationSemesters: '' // Added this state
   };
   const [formData, setFormData] = useState(initialFormState);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -159,6 +159,18 @@ const UserCourseMapping = () => {
               </label>
               <input 
                 type="number" name="durationYears" value={formData.durationYears} onChange={handleInputChange} required
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] font-black text-slate-800" 
+                placeholder="0" 
+              />
+            </div>
+
+            {/* Duration - Semesters (New Field Added) */}
+            <div>
+              <label className="block text-[10px] font-bold text-[#FF6900] uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Layers size={14} /> Total Semesters
+              </label>
+              <input 
+                type="number" name="durationSemesters" value={formData.durationSemesters} onChange={handleInputChange} required
                 className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] font-black text-slate-800" 
                 placeholder="0" 
               />

@@ -83,6 +83,13 @@ const DashboardLayout = () => {
                 >
                   Penalty Percentage
                 </Link>
+
+                <Link 
+                  to="/admin/master/financial-config" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/master/financial-config') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Financial Configuration
+                </Link>
                 
                 <Link 
                   to="/admin/master/due-date-config" 

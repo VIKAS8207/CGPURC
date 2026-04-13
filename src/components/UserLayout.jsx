@@ -80,13 +80,13 @@ const UserLayout = () => {
                   to="/user/course-setup" 
                   className={`block py-2 text-sm transition-colors ${isActive('/user/course-setup') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
                 >
-                  Course Creation
+                  Course
                 </Link>
                 <Link 
                   to="/university/branch-setup" 
                   className={`block py-2 text-sm transition-colors ${isActive('/university/branch-setup') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
                 >
-                  Branch Creation
+                  Branch 
                 </Link>
               </div>
             )}
