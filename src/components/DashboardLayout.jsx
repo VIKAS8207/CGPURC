@@ -3,12 +3,13 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, 
-  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School
+  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School, BarChart3,
 } from 'lucide-react';
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAcademicsOpen, setIsAcademicsOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
   const location = useLocation();
 
   // Helper to check active link
@@ -103,10 +104,58 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Add University</span>}
           </Link>
 
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-            <Calendar size={20} className="text-slate-400" />
-            {isSidebarOpen && <span>Calendar</span>}
-          </Link>
+          <div>
+  <button 
+    onClick={() => {
+      setIsAnalyticsOpen(!isAnalyticsOpen);
+      if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
+    }}
+    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${
+      isAnalyticsOpen ? 'bg-[#155DFC]/5 text-[#155DFC]' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+    }`}
+  >
+    <div className="flex items-center gap-3">
+      {/* BarChart3 is a great icon for Analytics/Reports */}
+      <BarChart3 size={20} className={isAnalyticsOpen ? 'text-[#155DFC]' : 'text-slate-400'} />
+      {isSidebarOpen && <span className="font-medium">Analytics & Insights</span>}
+    </div>
+    {isSidebarOpen && (
+      isAnalyticsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />
+    )}
+  </button>
+  
+  {/* Dropdown Content */}
+  {isSidebarOpen && isAnalyticsOpen && (
+    <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
+      <Link 
+        to="/admin/reports/enrollment" 
+        className={`block py-2 text-sm transition-colors ${
+          isActive('/admin/reports/enrollment') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
+        }`}
+      >
+        Enrollment Stats
+      </Link>
+      
+      <Link 
+        to="/admin/reports/revenue" 
+        className={`block py-2 text-sm transition-colors ${
+          isActive('/admin/reports/revenue') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
+        }`}
+      >
+        Financial Summary
+      </Link>
+
+      <Link 
+        to="/admin/reports/performance" 
+        className={`block py-2 text-sm transition-colors ${
+          isActive('/admin/reports/performance') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
+        }`}
+      >
+        Performance Audit
+      </Link>
+    </div>
+  )}
+</div>
         </nav>
 
         {/* Sidebar Footer */}
