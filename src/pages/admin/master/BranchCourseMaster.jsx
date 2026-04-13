@@ -8,13 +8,18 @@ import {
 
 const BranchCourseMaster = () => {
   const navigate = useNavigate();
+
   // --- UI STATES ---
   const [searchQuery, setSearchQuery] = useState("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [notificationData, setNotificationData] = useState({ course: "", count: 0 });
 
-  // --- MOCK DEPENDENCY DATA (From Course Master) ---
+  // --- NEW EDUNAUT PAGINATION STATES ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Standard starting point
+
+  // --- MOCK DEPENDENCY DATA ---
   const courseList = [
     { id: 'c1', name: 'B.Tech (Bachelor of Technology)' },
     { id: 'c2', name: 'M.Tech (Master of Technology)' },
@@ -23,7 +28,7 @@ const BranchCourseMaster = () => {
     { id: 'c5', name: 'MBA (Master of Business Admin)' },
   ];
 
-  // --- FORM STATE (Dynamic Branch Inputs) ---
+  // --- FORM STATE ---
   const [selectedCourse, setSelectedCourse] = useState("");
   const [branches, setBranches] = useState([{ id: Date.now(), value: "" }]);
 
@@ -35,10 +40,9 @@ const BranchCourseMaster = () => {
     { id: 4, courseName: "BBA (Bachelor of Arts)", branches: ["General Management"] },
   ]);
 
-  // --- PAGINATION ---
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(branchMappings.length / itemsPerPage);
+  // --- NEW EDUNAUT PAGINATION LOGIC ---
+  const totalRecords = branchMappings.length;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = branchMappings.slice(indexOfFirstItem, indexOfLastItem);
@@ -60,14 +64,11 @@ const BranchCourseMaster = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Filter out empty branches
     const validBranches = branches.filter(b => b.value.trim() !== "").map(b => b.value.trim());
     const courseObj = courseList.find(c => c.id === selectedCourse);
 
     if (!courseObj || validBranches.length === 0) return;
 
-    // Add to table
     const newMapping = {
       id: Date.now(),
       courseName: courseObj.name,
@@ -75,13 +76,9 @@ const BranchCourseMaster = () => {
     };
 
     setBranchMappings([newMapping, ...branchMappings]);
-    
-    // Trigger Notification
     setNotificationData({ course: courseObj.name, count: validBranches.length });
     setShowNotification(true);
     setIsFormOpen(false);
-
-    // Reset Form
     setSelectedCourse("");
     setBranches([{ id: Date.now(), value: "" }]);
 
@@ -163,8 +160,6 @@ const BranchCourseMaster = () => {
           </div>
           
           <form onSubmit={handleSubmit} className="p-6">
-            
-            {/* Step 1: Select Parent Course */}
             <div className="mb-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
               <label className="block text-sm font-bold text-slate-800 mb-2 flex items-center gap-2">
                 <BookOpen size={16} className="text-slate-400" /> 1. Select Parent Course
@@ -182,7 +177,6 @@ const BranchCourseMaster = () => {
               </select>
             </div>
 
-            {/* Step 2: Dynamic Branch Inputs */}
             <div className="mb-6 pl-2 border-l-2 border-dashed border-slate-300 ml-4 relative">
               <label className="block text-sm font-bold text-slate-800 mb-4 pl-4">
                 2. Enter Branches / Specializations
@@ -217,14 +211,13 @@ const BranchCourseMaster = () => {
                 <button 
                   type="button"
                   onClick={handleAddBranchField}
-                  className="flex items-center gap-2 text-sm font-bold text-[#155DFC] hover:text-[#155DFC] bg-[#155DFC]/10 hover:bg-[#155DFC]/20 px-4 py-2 rounded-lg transition-colors"
+                  className="flex items-center gap-2 text-sm font-bold text-[#155DFC] bg-[#155DFC]/10 hover:bg-[#155DFC]/20 px-4 py-2 rounded-lg transition-colors"
                 >
                   <Plus size={16} /> Add Another Branch
                 </button>
               </div>
             </div>
 
-            {/* Footer */}
             <div className="pt-6 border-t border-slate-100 flex justify-end gap-3">
               <button 
                 type="button"
@@ -244,110 +237,136 @@ const BranchCourseMaster = () => {
         </div>
       )}
 
-      {/* Toolbar */}
-      <div className="bg-white p-4 rounded-t-2xl border-x border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search mappings..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all text-sm"
-          />
-        </div>
-      </div>
-
-      {/* Data Table */}
-      <div className="bg-white border-x border-t border-slate-200 overflow-hidden overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-50 border-y border-slate-200">
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Parent Course</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Total Branches</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Mapped Branches</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {currentItems.map((mapping) => (
-              <tr key={mapping.id} className="hover:bg-slate-50 transition-colors group">
-                <td className="py-4 px-6">
-                  <div className="font-bold text-slate-800 flex items-center gap-2">
-                    
-                    {mapping.courseName}
-                  </div>
-                </td>
-                <td className="py-4 px-6">
-                  <span className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600">
-                    {mapping.branches.length}
-                  </span>
-                </td>
-                <td className="py-4 px-6">
-                  <div className="flex flex-wrap gap-2">
-                    {mapping.branches.slice(0, 3).map((branch, idx) => (
-                      <span key={idx} className="px-2.5 py-1 bg-[#155DFC]/5 border border-[#155DFC]/20 text-[#155DFC] text-xs font-semibold rounded-lg">
-                        {branch}
-                      </span>
-                    ))}
-                    {mapping.branches.length > 3 && (
-                      <span className="px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 text-xs font-semibold rounded-lg">
-                        +{mapping.branches.length - 3} more
-                      </span>
-                    )}
-                  </div>
-                </td>
-                <td className="py-4 px-6 text-right">
-                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      onClick={() => handleDelete(mapping.id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
-                      title="Delete Mapping"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Footer */}
-      <div className="bg-white border border-slate-200 rounded-b-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-slate-500">
-          Showing <span className="font-medium text-slate-700">{branchMappings.length === 0 ? 0 : indexOfFirstItem + 1}</span> to <span className="font-medium text-slate-700">{Math.min(indexOfLastItem, branchMappings.length)}</span> of <span className="font-medium text-slate-700">{branchMappings.length}</span> entries
-        </p>
+      {/* Directory Table Section */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
         
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft size={18} />
-          </button>
+        <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+          <h3 className="font-bold text-slate-800 text-lg">Current Mappings</h3>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-[#155DFC]/20 outline-none font-medium" 
+            />
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200 uppercase text-[10px] font-bold text-slate-500 tracking-widest">
+                <th className="py-4 px-6 w-20">S.No</th>
+                <th className="py-4 px-6">Parent Course</th>
+                <th className="py-4 px-6">Total Branches</th>
+                <th className="py-4 px-6">Specializations</th>
+                <th className="py-4 px-6 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-medium">
+              {currentItems.map((mapping, index) => (
+                <tr key={mapping.id} className="hover:bg-slate-50 transition-colors group">
+                  <td className="py-4 px-6 text-sm text-slate-400 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="font-bold text-slate-800 text-sm">{mapping.courseName}</div>
+                  </td>
+                  <td className="py-4 px-6 text-center w-32">
+                    <span className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-sm font-bold text-slate-600 mx-auto">
+                      {mapping.branches.length}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6">
+                    <div className="flex flex-wrap gap-2">
+                      {mapping.branches.slice(0, 3).map((branch, idx) => (
+                        <span key={idx} className="px-2.5 py-1 bg-[#155DFC]/5 border border-[#155DFC]/20 text-[#155DFC] text-xs font-bold rounded-lg">
+                          {branch}
+                        </span>
+                      ))}
+                      {mapping.branches.length > 3 && (
+                        <span className="px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold rounded-lg">
+                          +{mapping.branches.length - 3} more
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="py-4 px-6 text-right">
+                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => handleDelete(mapping.id)}
+                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                        title="Delete Mapping"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* --- NEW EDUNAUT PAGINATION UI --- */}
+        <div className="p-4 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center bg-white gap-4">
           
-          <div className="flex items-center gap-1">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button 
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${currentPage === i + 1 ? 'bg-[#155DFC] text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+          {/* Left Side: Items Per Page */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-500 font-medium whitespace-nowrap">Total: {totalRecords}</span>
+            <div className="relative">
+              <select 
+                value={itemsPerPage}
+                onChange={(e) => {setItemsPerPage(Number(e.target.value)); setCurrentPage(1);}}
+                className="appearance-none bg-white border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-[#155DFC]/20 transition-all cursor-pointer shadow-sm"
               >
-                {i + 1}
-              </button>
-            ))}
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+            </div>
+            <span className="text-sm text-slate-500 font-medium whitespace-nowrap">items / page</span>
           </div>
 
-          <button 
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages || totalPages === 0}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronRight size={18} />
-          </button>
+          {/* Right Side: Jump to Page and Navigation */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <select 
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="appearance-none bg-white border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-[#155DFC]/20 transition-all cursor-pointer shadow-sm"
+                >
+                  {[...Array(totalPages)].map((_, i) => (
+                    <option key={i+1} value={i+1}>{i+1}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+              </div>
+              <span className="text-sm text-slate-500 font-medium whitespace-nowrap">of {totalPages} pages</span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 

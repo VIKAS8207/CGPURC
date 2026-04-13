@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   UploadCloud, Search, Filter, ChevronRight, 
   Users, GraduationCap, FileText, IdCard, Receipt, 
-  FileCheck, ArrowLeft, Calendar
+  FileCheck, ArrowLeft, Calendar, Wallet
 } from 'lucide-react';
 
 const UserUploads = () => {
@@ -38,6 +38,15 @@ const UserUploads = () => {
       color: "text-rose-600", 
       bg: "bg-rose-50",
       link: "/user/uploads/academic-calendar"
+    },
+    { 
+      title: "Course & Fee Structure", 
+      desc: "Upload annual course lists and approved fee breakdown", 
+      icon: Wallet, 
+      status: "Required",
+      color: "text-blue-600", 
+      bg: "bg-blue-50",
+      link: "/user/uploads/course-fee" 
     }
   ];
 

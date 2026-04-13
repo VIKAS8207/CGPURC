@@ -99,8 +99,8 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Office Bearer</span>}
           </Link>
 
-          <Link to="#" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-            <School size={20} className={isActive('/user-profile') ? 'text-blue-600' : 'text-slate-400'} />
+          <Link to="/admin/add-university" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/add-university') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <School size={20} className={isActive('/admin/add-university') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Add University</span>}
           </Link>
 

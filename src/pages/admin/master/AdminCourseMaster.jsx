@@ -1,54 +1,55 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
-  BookOpen, Plus, ChevronUp, Search, Filter, 
-  Edit2, Trash2, ChevronLeft, ChevronRight, 
-  ArrowLeft, ChevronDown 
+  BookOpen, Plus, Search, Edit2, Trash2, 
+  ChevronLeft, ChevronRight, ArrowLeft, 
+  ChevronDown, X 
 } from 'lucide-react';
 
 const AdminCourseMaster = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isFormOpen, setIsFormOpen] = useState(false);
   
-  // Pagination States (Added for consistency)
+  // --- STATES ---
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // New Edunaut Pagination States
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(20);
 
-  // Initial Form State
-  const initialFormState = { courseName: '', courseCode: '', level: '', duration: '' };
-  const [formData, setFormData] = useState(initialFormState);
+  // Simplified Form State
+  const [courseName, setCourseName] = useState("");
 
-  // Dummy data representing the central database
+  // Mock Database (Simplified)
   const [courses, setCourses] = useState([
-    { id: 1, courseName: 'Bachelor of Technology', courseCode: 'B.Tech', level: 'Under Graduate (UG)', duration: '4 Years' },
-    { id: 2, courseName: 'Master of Business Administration', courseCode: 'MBA', level: 'Post Graduate (PG)', duration: '2 Years' },
-    { id: 3, courseName: 'Bachelor of Science', courseCode: 'B.Sc', level: 'Under Graduate (UG)', duration: '3 Years' },
+    { id: 1, name: 'Bachelor of Technology' },
+    { id: 2, name: 'Master of Business Administration' },
+    { id: 3, name: 'Bachelor of Science' },
+    { id: 4, name: 'Bachelor of Computer Applications' },
+    { id: 5, name: 'Master of Arts' },
   ]);
 
-  // Pagination Logic
-  const totalPages = Math.ceil(courses.length / itemsPerPage);
+  // --- PAGINATION LOGIC ---
+  const totalRecords = courses.length;
+  const totalPages = Math.ceil(totalRecords / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = courses.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Handle Input
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Handle Submit
+  // --- HANDLERS ---
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newCourse = { ...formData, id: Date.now(), duration: `${formData.duration} Years` };
+    const newCourse = { 
+      id: Date.now(), 
+      name: courseName 
+    };
     setCourses([newCourse, ...courses]);
-    setFormData(initialFormState); // Reset form
-    setIsFormOpen(false); // Close form after submission
+    setCourseName("");
+    setIsFormOpen(false);
   };
 
-  // Handle Delete
   const handleDelete = (id) => {
-    setCourses(prev => prev.filter(course => course.id !== id));
+    setCourses(prev => prev.filter(c => c.id !== id));
   };
 
   return (
@@ -65,11 +66,11 @@ const AdminCourseMaster = () => {
 
       {/* Breadcrumb Path */}
       <div className="mb-8 flex items-center gap-2 text-sm font-medium text-slate-500">
-        <Link to="/admin-dashboard" className="hover:text-[#155DFC] transition-colors">Admin Dashboard</Link>
+        <Link to="/admin-dashboard" className="hover:text-[#155DFC]">Admin Dashboard</Link>
         <ChevronRight size={14} className="text-slate-400" />
-        <Link to="/admin/master" className="hover:text-[#155DFC] transition-colors">Master Configuration</Link>
+        <Link to="/admin/master" className="hover:text-[#155DFC]">Master Configuration</Link>
         <ChevronRight size={14} className="text-slate-400" />
-        <span className="text-slate-900 font-semibold">Course Master</span>
+        <span className="text-slate-900 font-semibold">Course Registry</span>
       </div>
 
       {/* Header Section */}
@@ -81,185 +82,154 @@ const AdminCourseMaster = () => {
             </div>
             Course Master
           </h1>
-          <p className="text-slate-500 mt-2">Define the overarching degrees and programs available to universities.</p>
+          <p className="text-slate-500 mt-2 font-medium">Manage the list of approved degrees and programs for the system.</p>
         </div>
         
         <button 
           onClick={() => setIsFormOpen(!isFormOpen)}
-          className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl transition-all shadow-sm font-medium ${isFormOpen ? 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300' : 'bg-slate-900 hover:bg-black text-white shadow-md active:scale-95'}`}
+          className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl transition-all shadow-md font-bold text-sm active:scale-95 ${
+            isFormOpen ? 'bg-slate-100 text-slate-600 border border-slate-200' : 'bg-[#155DFC] text-white'
+          }`}
         >
-          {isFormOpen ? <ChevronDown size={20} className="transform rotate-180" /> : <Plus size={20} />}
-          {isFormOpen ? 'Cancel' : 'Add New Course'}
+          {isFormOpen ? <X size={18} /> : <Plus size={18} />}
+          {isFormOpen ? 'Close Form' : 'Register New Course'}
         </button>
       </div>
 
-      {/* Add Course Form (Expandable) */}
+      {/* SINGLE FIELD FORM */}
       {isFormOpen && (
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm mb-8 animate-in slide-in-from-top-4 fade-in duration-300 overflow-hidden">
-          <div className="bg-slate-50/50 border-b border-slate-100 p-4 px-6 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-slate-800">Create New Program / Degree</h2>
+          <div className="bg-slate-50/50 border-b border-slate-100 p-4 px-6 font-bold text-slate-800 uppercase text-xs tracking-widest">
+            Course Entry
           </div>
           
-          <form onSubmit={handleSubmit} className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              
-              {/* Full Course Name */}
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Full Course Name</label>
+          <form onSubmit={handleSubmit} className="p-8">
+            <div className="max-w-2xl">
+              <label className="block text-[10px] font-bold text-slate-400 uppercase mb-2 tracking-widest">Full Course Name</label>
+              <div className="flex flex-col md:flex-row gap-4">
                 <input 
-                  type="text" name="courseName" value={formData.courseName} onChange={handleInputChange} required 
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-800" 
+                  type="text" 
+                  value={courseName} 
+                  onChange={(e) => setCourseName(e.target.value)} 
+                  required 
+                  className="flex-1 px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[#155DFC]/10 focus:border-[#155DFC] transition-all font-bold text-slate-700" 
                   placeholder="e.g. Bachelor of Technology" 
                 />
+                <button type="submit" className="bg-[#155DFC] text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-[#155DFC]/20 active:scale-95 transition-all text-xs uppercase tracking-widest">
+                  Save Course
+                </button>
               </div>
-
-              {/* Course Code / Short Name */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Short Name / Code</label>
-                <input 
-                  type="text" name="courseCode" value={formData.courseCode} onChange={handleInputChange} required 
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-800" 
-                  placeholder="e.g. B.Tech" 
-                />
-              </div>
-
-              {/* Duration */}
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Duration (Years)</label>
-                <input 
-                  type="number" name="duration" min="1" max="6" value={formData.duration} onChange={handleInputChange} required 
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-800" 
-                  placeholder="e.g. 4" 
-                />
-              </div>
-
-              {/* Academic Level */}
-              <div className="lg:col-span-2">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Academic Level</label>
-                <select 
-                  name="level" value={formData.level} onChange={handleInputChange} required 
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all font-medium text-slate-800"
-                >
-                  <option value="" disabled>Select Level...</option>
-                  <option value="Under Graduate (UG)">Under Graduate (UG)</option>
-                  <option value="Post Graduate (PG)">Post Graduate (PG)</option>
-                  <option value="Diploma">Diploma</option>
-                  <option value="Ph.D / Doctorate">Ph.D / Doctorate</option>
-                </select>
-              </div>
-
-            </div>
-
-            <div className="pt-4 border-t border-slate-100 flex justify-end">
-              <button 
-                type="submit" 
-                className="w-full sm:w-auto px-8 py-2.5 text-sm font-medium text-white bg-[#155DFC] hover:bg-[#155DFC]/90 shadow-md hover:shadow-lg rounded-xl transition-all active:scale-95"
-              >
-                Save Course to Master
-              </button>
             </div>
           </form>
         </div>
       )}
 
-      {/* Toolbar: Search & Filter */}
-      <div className="bg-white p-4 rounded-t-2xl border-x border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center">
-        <div className="relative w-full sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search courses..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 focus:border-[#155DFC] transition-all text-sm"
-          />
-        </div>
-        <button className="flex items-center gap-2 text-slate-600 bg-white border border-slate-200 px-4 py-2 rounded-xl hover:bg-slate-50 transition-all text-sm font-medium w-full sm:w-auto justify-center">
-          <Filter size={18} />
-          Filter
-        </button>
-      </div>
-
-      {/* Course Data Table */}
-      <div className="bg-white border-x border-t border-slate-200 overflow-hidden overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-slate-50 border-y border-slate-200">
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Course Details</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Level</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Duration</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Status</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {currentItems.map((course) => (
-              <tr key={course.id} className="hover:bg-slate-50 transition-colors group">
-                <td className="py-4 px-6">
-                  <div className="font-bold text-slate-800">{course.courseName}</div>
-                  <div className="text-xs font-bold text-[#155DFC] bg-[#155DFC]/10 px-2 py-0.5 rounded border border-[#155DFC]/20 w-fit mt-1">
-                    {course.courseCode}
-                  </div>
-                </td>
-                <td className="py-4 px-6 text-sm text-slate-600 font-medium">{course.level}</td>
-                <td className="py-4 px-6 text-sm text-slate-600 font-medium">{course.duration}</td>
-                <td className="py-4 px-6">
-                  <span className="bg-emerald-50 text-emerald-700 px-2.5 py-1.5 rounded-md text-xs font-bold border border-emerald-200">ACTIVE</span>
-                </td>
-                <td className="py-4 px-6 text-right">
-                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
-                      <Edit2 size={18} />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(course.id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Footer */}
-      <div className="bg-white border border-slate-200 rounded-b-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-slate-500">
-          Showing <span className="font-medium text-slate-700">{courses.length === 0 ? 0 : indexOfFirstItem + 1}</span> to <span className="font-medium text-slate-700">{Math.min(indexOfLastItem, courses.length)}</span> of <span className="font-medium text-slate-700">{courses.length}</span> entries
-        </p>
+      {/* DATA TABLE SECTION */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-8">
         
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronLeft size={18} />
-          </button>
+        {/* Table Toolbar */}
+        <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50/50">
+          <h3 className="font-bold text-slate-800 tracking-tight text-lg">Course Registry</h3>
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+            <input 
+              type="text" 
+              placeholder="Search courses..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 text-sm rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-[#155DFC]/20 outline-none font-medium" 
+            />
+          </div>
+        </div>
+
+        {/* Simplified Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200 uppercase text-[10px] font-bold text-slate-500 tracking-widest">
+                <th className="py-4 px-6 w-20">S.No</th>
+                <th className="py-4 px-6">Full Course Name</th>
+                <th className="py-4 px-6 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 font-medium">
+              {currentItems.map((course, index) => (
+                <tr key={course.id} className="hover:bg-slate-50 group transition-colors">
+                  <td className="py-4 px-6 text-sm text-slate-400 font-bold">
+                    {indexOfFirstItem + index + 1}
+                  </td>
+                  <td className="py-4 px-6 font-bold text-slate-800 text-sm">
+                    {course.name}
+                  </td>
+                  <td className="py-4 px-6 text-right">
+                    <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="p-2 text-slate-400 hover:text-[#155DFC] hover:bg-blue-50 rounded-lg transition-colors"><Edit2 size={16}/></button>
+                      <button onClick={() => handleDelete(course.id)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={16}/></button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* --- NEW EDUNAUT PAGINATION UI --- */}
+        <div className="p-4 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center bg-white gap-4">
           
-          <div className="flex items-center gap-1">
-            {Array.from({ length: totalPages }).map((_, i) => (
-              <button 
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${currentPage === i + 1 ? 'bg-[#155DFC] text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+          {/* Left: Items Per Page Dropdown */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-slate-500 font-medium whitespace-nowrap">Total: {totalRecords}</span>
+            <div className="relative">
+              <select 
+                value={itemsPerPage}
+                onChange={(e) => {setItemsPerPage(Number(e.target.value)); setCurrentPage(1);}}
+                className="appearance-none bg-white border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-[#155DFC]/20 transition-all cursor-pointer shadow-sm"
               >
-                {i + 1}
-              </button>
-            ))}
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={30}>30</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+            </div>
+            <span className="text-sm text-slate-500 font-medium">items / page</span>
           </div>
 
-          <button 
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages || totalPages === 0}
-            className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <ChevronRight size={18} />
-          </button>
+          {/* Right: Page Selector Dropdown */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <select 
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(Number(e.target.value))}
+                  className="appearance-none bg-white border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-[#155DFC]/20 transition-all cursor-pointer shadow-sm"
+                >
+                  {[...Array(totalPages)].map((_, i) => (
+                    <option key={i+1} value={i+1}>{i+1}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
+              </div>
+              <span className="text-sm text-slate-500 font-medium whitespace-nowrap">of {totalPages} pages</span>
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 

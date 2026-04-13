@@ -22,7 +22,7 @@ const AdminMaster = () => {
       link: "/admin/master/Academic-Year" 
     },
     { 
-      title: "Course & Class Master", 
+      title: "Course Master", 
       desc: "Degrees, standards, and stream mapping", 
       icon: GraduationCap, 
       count: "24 Classes",

@@ -10,6 +10,7 @@ const UserAcademicYear = () => {
   const navigate = useNavigate();
 
   // --- MOCK DATA ---
+  
   // 1. Action Required (Strictly Pending)
   const [openSession, setOpenSession] = useState({
     id: 101,
@@ -18,9 +19,9 @@ const UserAcademicYear = () => {
     status: "pending" 
   });
 
-  // 2. Currently Active (Submitted but still in the active year - Editable ONCE)
+  // 2. Currently Active (Submitted - Unlimited Edits Allowed)
   const [activeYears, setActiveYears] = useState([
-    { id: 201, name: "Academic Year 2023-24", start: "Apr 01, 2023", end: "Mar 31, 2024", submittedOn: "Nov 12, 2023", editUsed: false }
+    { id: 201, name: "Academic Year 2023-24", start: "Apr 01, 2023", end: "Mar 31, 2024", submittedOn: "Nov 12, 2023" }
   ]);
 
   // 3. Completed Sessions (Archived, Read-Only)
@@ -32,7 +33,6 @@ const UserAcademicYear = () => {
   ];
 
   // --- UI STATES ---
-  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [viewModalData, setViewModalData] = useState(null);
   const [sessionBeingEdited, setSessionBeingEdited] = useState(null);
@@ -61,12 +61,7 @@ const UserAcademicYear = () => {
   // --- HANDLERS ---
   const handleOpenEdit = (year) => {
     setSessionBeingEdited(year);
-    setIsWarningModalOpen(true);
-  };
-
-  const confirmEdit = () => {
-    setIsWarningModalOpen(false);
-    setIsFormModalOpen(true);
+    setIsFormModalOpen(true); // Directly open form, no warning popup
   };
 
   const handleFormSubmit = (e) => {
@@ -74,11 +69,10 @@ const UserAcademicYear = () => {
     setIsFormModalOpen(false);
     
     if (sessionBeingEdited) {
-      setActiveYears(activeYears.map(year => 
-        year.id === sessionBeingEdited.id ? { ...year, editUsed: true } : year
-      ));
+      // Logic for updating existing entry
       setSessionBeingEdited(null);
     } else if (openSession) {
+      // Logic for moving pending to active
       setOpenSession(null); 
     }
   };
@@ -110,7 +104,7 @@ const UserAcademicYear = () => {
           </div>
           Academic Year Submissions
         </h1>
-        <p className="text-slate-500 mt-2">View active sessions and submit your institutional data for compliance.</p>
+        <p className="text-slate-500 mt-2 font-medium">View active sessions and manage your institutional compliance data.</p>
       </div>
 
       {/* SECTION 1: ACTION REQUIRED */}
@@ -152,7 +146,7 @@ const UserAcademicYear = () => {
       )}
 
 
-      {/* SECTION 2: CURRENTLY ACTIVE */}
+      {/* SECTION 2: CURRENTLY ACTIVE (EDITABLE) */}
       <div className="mb-10">
         <h2 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Currently Active</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -164,30 +158,24 @@ const UserAcademicYear = () => {
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 </div>
                 <p className="text-sm text-slate-500 font-medium">{year.start} to {year.end}</p>
-                <p className="text-xs font-bold text-[#FF6900] bg-[#FF6900]/5 px-2 py-1 rounded w-fit mt-3">
-                  Submitted on {year.submittedOn}
+                <p className="text-xs font-bold text-[#FF6900] bg-[#FF6900]/5 px-2 py-1 rounded w-fit mt-3 uppercase tracking-wider">
+                  Verified Submission
                 </p>
               </div>
               
               <div className="flex items-center gap-2">
-                {!year.editUsed ? (
-                  <button 
-                    onClick={() => handleOpenEdit(year)}
-                    className="p-2.5 text-[#FF6900] hover:bg-[#FF6900]/10 rounded-xl transition-colors border border-transparent hover:border-[#FF6900]/20"
-                    title="Edit Data (1 Chance Left)"
-                  >
-                    <Edit2 size={18} />
-                  </button>
-                ) : (
-                  <div className="p-2.5 bg-slate-50 border border-slate-100 text-slate-400 rounded-xl cursor-not-allowed" title="Edit Locked">
-                    <CheckCircle2 size={18} />
-                  </div>
-                )}
+                <button 
+                  onClick={() => handleOpenEdit(year)}
+                  className="p-2.5 text-[#FF6900] hover:bg-[#FF6900]/10 rounded-xl transition-colors border border-transparent hover:border-[#FF6900]/20"
+                  title="Update Information"
+                >
+                  <Edit2 size={18} />
+                </button>
                 
                 <button 
                   onClick={() => setViewModalData({ ...year, isRecent: true, ...formData })}
                   className="p-2.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
-                  title="View Submitted Data"
+                  title="View Submission"
                 >
                   <Eye size={18} />
                 </button>
@@ -207,11 +195,11 @@ const UserAcademicYear = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Session Name</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">End Date</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Submitted On</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                  <th className="py-4 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Session Name</th>
+                  <th className="py-4 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Start Date</th>
+                  <th className="py-4 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">End Date</th>
+                  <th className="py-4 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status</th>
+                  <th className="py-4 px-6 text-right text-[10px] font-bold text-slate-500 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -225,11 +213,13 @@ const UserAcademicYear = () => {
                     </td>
                     <td className="py-4 px-6 text-sm text-slate-600 font-medium">{year.start}</td>
                     <td className="py-4 px-6 text-sm text-slate-600 font-medium">{year.end}</td>
-                    <td className="py-4 px-6 text-sm text-slate-600 font-medium">{year.submittedOn}</td>
+                    <td className="py-4 px-6">
+                      <span className="text-[10px] font-bold px-2 py-1 rounded bg-slate-100 text-slate-500 border border-slate-200">ARCHIVED</span>
+                    </td>
                     <td className="py-4 px-6 text-right">
                       <button 
                         onClick={() => setViewModalData(year)}
-                        className="p-2 text-slate-400 hover:text-[#FF6900] hover:bg-[#FF6900]/10 rounded-lg transition-colors inline-flex opacity-0 group-hover:opacity-100" 
+                        className="p-2 text-slate-400 hover:text-[#FF6900] hover:bg-orange-50 rounded-lg transition-colors inline-flex opacity-0 group-hover:opacity-100" 
                         title="View Details"
                       >
                         <Eye size={18} />
@@ -242,35 +232,31 @@ const UserAcademicYear = () => {
           </div>
 
           <div className="bg-white border-t border-slate-100 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-slate-500">
-              Showing <span className="font-bold text-slate-700">{indexOfFirstItem + 1}</span> to <span className="font-bold text-slate-700">{Math.min(indexOfLastItem, completedYearsData.length)}</span> of <span className="font-bold text-slate-700">{completedYearsData.length}</span> entries
+            <p className="text-sm text-slate-500 font-bold">
+              Showing <span className="text-slate-900">{indexOfFirstItem + 1}</span> to <span className="text-slate-900">{Math.min(indexOfLastItem, completedYearsData.length)}</span> of {completedYearsData.length} records
             </p>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-600 disabled:opacity-50"
               >
                 <ChevronLeft size={18} />
               </button>
-              
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${currentPage === i + 1 ? 'bg-[#FF6900] text-white' : 'text-slate-600 hover:bg-slate-100'}`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-
+              {Array.from({ length: totalPages }).map((_, i) => (
+                <button 
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${currentPage === i + 1 ? 'bg-[#FF6900] text-white shadow-sm' : 'text-slate-500 hover:bg-slate-100'}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 text-slate-600"
               >
                 <ChevronRight size={18} />
               </button>
@@ -280,40 +266,7 @@ const UserAcademicYear = () => {
       </div>
 
 
-      {/* MODAL 1: ONE-TIME EDIT WARNING */}
-      {isWarningModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 text-center">
-              <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
-                <AlertTriangle size={32} />
-              </div>
-              <h2 className="text-xl font-bold text-slate-900 mb-2">Final Edit Warning</h2>
-              <p className="text-sm text-slate-600 leading-relaxed mb-6">
-                You only have <strong className="text-red-600 uppercase tracking-wide">one chance</strong> to edit your data for <span className="font-bold text-slate-800">{sessionBeingEdited?.name}</span>. Once saved, it will be permanently locked.
-              </p>
-              
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => setIsWarningModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={confirmEdit}
-                  className="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-md transition-all active:scale-95"
-                >
-                  Proceed to Edit
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-
-      {/* MODAL 2: DATA ENTRY FORM */}
+      {/* DATA ENTRY FORM MODAL */}
       {isFormModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
@@ -334,89 +287,64 @@ const UserAcademicYear = () => {
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">University ID</label>
                   <input 
-                    type="text" 
-                    placeholder="e.g. UNIV-1024"
-                    value={formData.universityId}
+                    type="text" placeholder="e.g. UNIV-1024" value={formData.universityId}
                     onChange={(e) => setFormData({...formData, universityId: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">University Name</label>
                   <input 
-                    type="text" 
-                    placeholder="Full Institution Name"
-                    value={formData.universityName}
+                    type="text" placeholder="Full Institution Name" value={formData.universityName}
                     onChange={(e) => setFormData({...formData, universityName: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Unique Identification Code (AISHE)</label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">AISHE / State Code</label>
                   <input 
-                    type="text" 
-                    placeholder="Enter AISHE / State Code"
-                    value={formData.uniqueId}
+                    type="text" placeholder="Unique Identification Code" value={formData.uniqueId}
                     onChange={(e) => setFormData({...formData, uniqueId: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Contact Number</label>
                   <input 
-                    type="tel" 
-                    placeholder="+91 XXXXX XXXXX"
-                    value={formData.contactNumber}
+                    type="tel" placeholder="+91 XXXXX XXXXX" value={formData.contactNumber}
                     onChange={(e) => setFormData({...formData, contactNumber: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Official Email ID</label>
                   <input 
-                    type="email" 
-                    placeholder="registrar@university.edu"
-                    value={formData.emailId}
+                    type="email" placeholder="official@university.edu" value={formData.emailId}
                     onChange={(e) => setFormData({...formData, emailId: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Website URL</label>
                   <input 
-                    type="url" 
-                    placeholder="https://www.university.edu"
-                    value={formData.websiteUrl}
+                    type="url" placeholder="https://www.university.edu" value={formData.websiteUrl}
                     onChange={(e) => setFormData({...formData, websiteUrl: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium"
                   />
                 </div>
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-bold text-slate-700 mb-2">University Address</label>
                   <textarea 
-                    rows="3"
-                    placeholder="Enter complete physical address..."
-                    value={formData.address}
+                    rows="3" placeholder="Enter complete physical address..." value={formData.address}
                     onChange={(e) => setFormData({...formData, address: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800 resize-none"
+                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium resize-none"
                   ></textarea>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Pin Code</label>
-                  <input 
-                    type="text" 
-                    placeholder="6-digit postal code"
-                    value={formData.pinCode}
-                    onChange={(e) => setFormData({...formData, pinCode: e.target.value})}
-                    className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all font-medium text-slate-800"
-                  />
                 </div>
 
                 <div className="md:col-span-2">
@@ -426,10 +354,9 @@ const UserAcademicYear = () => {
                       <UploadCloud className="text-[#FF6900]" size={32} />
                     </div>
                     <p className="text-sm font-bold text-slate-700 mb-1">Click to upload or drag and drop</p>
-                    <p className="text-xs text-slate-500">SVG, PNG, JPG (max. 2MB)</p>
+                    <p className="text-xs text-slate-500 font-medium">PNG, JPG, SVG up to 2MB</p>
                     <input 
-                      type="file" 
-                      className="hidden" 
+                      type="file" className="hidden" 
                       onChange={(e) => setFormData({...formData, logoFileName: e.target.files[0]?.name || ""})} 
                     />
                     {formData.logoFileName && (
@@ -444,30 +371,20 @@ const UserAcademicYear = () => {
             </div>
 
             <div className="p-5 border-t border-slate-100 bg-slate-50 flex justify-end gap-3 shrink-0">
-              <button 
-                onClick={() => setIsFormModalOpen(false)}
-                className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition-all"
-              >
-                Save Draft
-              </button>
-              <button 
-                onClick={handleFormSubmit}
-                className="px-8 py-2.5 text-sm font-bold text-white bg-[#FF6900] hover:bg-[#e65f00] rounded-xl shadow-md active:scale-95 transition-all"
-              >
-                Final Submit
-              </button>
+              <button onClick={() => setIsFormModalOpen(false)} className="px-6 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 rounded-xl transition-all">Cancel</button>
+              <button onClick={handleFormSubmit} className="px-8 py-2.5 text-sm font-bold text-white bg-[#FF6900] hover:bg-[#e65f00] rounded-xl shadow-md active:scale-95 transition-all">Submit Details</button>
             </div>
           </div>
         </div>
       )}
 
 
-      {/* MODAL 3: VIEW SUBMITTED DATA (READ-ONLY) */}
+      {/* VIEW SUBMITTED DATA MODAL (READ-ONLY) */}
       {viewModalData && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50">
-              <h2 className="text-lg font-bold text-slate-900 tracking-tight">Submission Record Details</h2>
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight">Submission Details</h2>
               <button onClick={() => setViewModalData(null)} className="p-2 text-slate-400 hover:bg-slate-200 rounded-xl transition-colors">
                 <X size={20} />
               </button>
@@ -479,39 +396,29 @@ const UserAcademicYear = () => {
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Academic Session</p>
                   <p className="text-xl font-bold text-slate-800">{viewModalData.name}</p>
                 </div>
-                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full border border-emerald-100">
-                  VERIFIED
+                <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold rounded-full border border-emerald-100 uppercase tracking-widest">
+                  Active
                 </span>
               </div>
 
-              {viewModalData.isRecent ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { label: "University ID", value: viewModalData.universityId },
-                    { label: "University Name", value: viewModalData.universityName },
-                    { label: "Unique ID", value: viewModalData.uniqueId },
-                    { label: "Contact Number", value: viewModalData.contactNumber },
-                    { label: "Email ID", value: viewModalData.emailId },
-                    { label: "Website URL", value: viewModalData.websiteUrl },
-                    { label: "Address", value: viewModalData.address, full: true },
-                    { label: "Pin Code", value: viewModalData.pinCode },
-                    { label: "Logo File", value: viewModalData.logoFileName }
-                  ].map((item, idx) => (
-                    <div key={idx} className={`p-4 bg-slate-50 rounded-2xl border border-slate-100 ${item.full ? 'md:col-span-2' : ''}`}>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{item.label}</p>
-                      <p className="text-sm font-bold text-slate-800 break-all">{item.value || "N/A"}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-10 text-center bg-slate-50 border border-slate-200 border-dashed rounded-3xl">
-                  <div className="w-16 h-16 bg-white border border-slate-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-emerald-500">
-                    <CheckCircle2 size={32} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { label: "University ID", value: viewModalData.universityId },
+                  { label: "University Name", value: viewModalData.universityName },
+                  { label: "AISHE Code", value: viewModalData.uniqueId },
+                  { label: "Contact No.", value: viewModalData.contactNumber },
+                  { label: "Email ID", value: viewModalData.emailId },
+                  { label: "Website", value: viewModalData.websiteUrl },
+                  { label: "Address", value: viewModalData.address, full: true },
+                  { label: "Pin Code", value: viewModalData.pinCode },
+                  { label: "Logo File", value: viewModalData.logoFileName }
+                ].map((item, idx) => (
+                  <div key={idx} className={`p-4 bg-slate-50 rounded-2xl border border-slate-100 ${item.full ? 'md:col-span-2' : ''}`}>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">{item.label}</p>
+                    <p className="text-sm font-bold text-slate-800 break-all">{item.value || "N/A"}</p>
                   </div>
-                  <p className="text-base font-bold text-slate-800 tracking-tight">Data Locked & Archived</p>
-                  <p className="text-sm text-slate-500 mt-2 font-medium">Historical data for this session is stored securely. Submitted on {viewModalData.submittedOn}</p>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
 
             <div className="p-5 bg-slate-50 border-t border-slate-100 flex justify-end">

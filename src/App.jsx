@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminMaster from './pages/admin/AdminMaster';
+import AddUniversity from "./pages/admin/AddUniversity";
 
 // The new Academic Year page!
 import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
@@ -16,8 +17,12 @@ import UserAcademicYear from "./pages/user/UserAcademicYear";
 import UserUploads from "./pages/user/UserUploads";
 import DegreeUpload from "./pages/user/uploadpages/DegreeUpload";
 import StudentDataUpload from "./pages/user/uploadpages/StudentUpload";
+import CourseFeeUpload from "./pages/user/uploadpages/CourseFeeUpload";
+import UserCourseMapping from "./pages/user/UserCourseMapping";
+import UniversityBranchSetup from './pages/user/UniversityBranchSetup';
 import AcademicCalendarUpload from "./pages/user/uploadpages/AcademicCalendarUpload";
 import AdminOfficeBearer from './pages/admin/AdminOfficeBearer';
+import UserOfficeBearer from "./pages/user/UserOfficeBearer";
 import UserProfile from "./pages/user/UserProfile";
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
@@ -43,6 +48,7 @@ function App() {
           <Route element={<DashboardLayout />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/admin/master" element={<AdminMaster />} />
+            <Route path="/admin/add-university" element={<AddUniversity />} />
             <Route path="/admin/master/academic-year" element={<AcademicYearMaster />} />
             <Route path="/admin/master/course-master" element={<AdminCourseMaster />} />
             <Route path="/admin/master/branch-course" element={<BranchCourseMaster />} />
@@ -57,8 +63,12 @@ function App() {
             <Route path="/user-academic-year" element={<UserAcademicYear />} />
             <Route path="/user/uploads" element={<UserUploads />} />
             <Route path="/user/uploads/degree" element={<DegreeUpload />} />
+            <Route path="/user/course-setup" element={<UserCourseMapping />} />
+            <Route path="/university/branch-setup" element={<UniversityBranchSetup />} />
             <Route path="/user/uploads/student-data" element={<StudentDataUpload />} />
+            <Route path="/user/uploads/course-fee" element={<CourseFeeUpload />} />
             <Route path="/user/uploads/academic-calendar" element={<AcademicCalendarUpload />} />
+            <Route path="/user/office-bearers" element={<UserOfficeBearer />} />
             <Route path="/user-profile" element={<UserProfile />} />
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>
