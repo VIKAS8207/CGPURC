@@ -78,8 +78,8 @@ const DashboardLayout = () => {
             {isSidebarOpen && isAcademicsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
                 <Link 
-                  to="/admin/master/financial-config" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/master/financial-config') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                  to="/admin/penalty-master" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/penalty-master') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
                 >
                   Penalty Percentage
                 </Link>
@@ -111,66 +111,18 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Add University</span>}
           </Link>
 
-          <div>
-  <button 
-    onClick={() => {
-      setIsAnalyticsOpen(!isAnalyticsOpen);
-      if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
-    }}
-    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${
-      isAnalyticsOpen ? 'bg-[#155DFC]/5 text-[#155DFC]' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-    }`}
-  >
-    <div className="flex items-center gap-3">
-      {/* BarChart3 is a great icon for Analytics/Reports */}
-      <BarChart3 size={20} className={isAnalyticsOpen ? 'text-[#155DFC]' : 'text-slate-400'} />
-      {isSidebarOpen && <span className="font-medium">Analytics & Insights</span>}
-    </div>
-    {isSidebarOpen && (
-      isAnalyticsOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />
-    )}
-  </button>
-  
-  {/* Dropdown Content */}
-  {isSidebarOpen && isAnalyticsOpen && (
-    <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
-      <Link 
-        to="/admin/reports/enrollment" 
-        className={`block py-2 text-sm transition-colors ${
-          isActive('/admin/reports/enrollment') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
-        }`}
-      >
-        Enrollment Stats
-      </Link>
-      
-      <Link 
-        to="/admin/reports/revenue" 
-        className={`block py-2 text-sm transition-colors ${
-          isActive('/admin/reports/revenue') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
-        }`}
-      >
-        Financial Summary
-      </Link>
+          
+ 
 
-      <Link 
-        to="/admin/reports/performance" 
-        className={`block py-2 text-sm transition-colors ${
-          isActive('/admin/reports/performance') ? 'text-[#155DFC] font-bold' : 'text-slate-500 hover:text-[#155DFC]'
-        }`}
-      >
-        Performance Audit
-      </Link>
-    </div>
-  )}
-</div>
+          <Link to="/admin/verify-certificates" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/verify-certificates') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <School size={20} className={isActive('/admin/verify-certificates') ? 'text-blue-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Verify Certificates</span>}
+          </Link>
+
         </nav>
 
         {/* Sidebar Footer */}
         <div className="p-4 border-t border-slate-100">
-          <Link to="#" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors">
-            <Settings size={20} className="text-slate-400" />
-            {isSidebarOpen && <span>Settings</span>}
-          </Link>
           <Link to="/login" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-600 hover:bg-red-50 transition-colors mt-1">
             <LogOut size={20} className="text-red-400" />
             {isSidebarOpen && <span>Logout</span>}

@@ -13,7 +13,7 @@ import AddUniversity from "./pages/admin/AddUniversity";
 import AcademicYearMaster from "./pages/admin/master/AcademicYearMaster";
 import AdminCourseMaster from './pages/admin/master/AdminCourseMaster';
 import BranchCourseMaster from "./pages/admin/master/BranchCourseMaster";
-import UserAcademicYear from "./pages/user/UserAcademicYear";
+import CertificateVerification from "./pages/admin/master/CertificateVerification";
 import UserUploads from "./pages/user/UserUploads";
 import DegreeUpload from "./pages/user/uploadpages/DegreeUpload";
 import StudentDataUpload from "./pages/user/uploadpages/StudentUpload";
@@ -28,6 +28,7 @@ import UserPaymentHistory from "./pages/user/UserPaymentHistory";
 import UserProfile from "./pages/user/UserProfile";
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
+import PenaltyMaster from "./pages/admin/master/PenaltyMaster";
 import DueDateConfig from "./pages/admin/master/DueDateConfig";
 
 // Layouts
@@ -55,14 +56,16 @@ function App() {
             <Route path="/admin/master/course-master" element={<AdminCourseMaster />} />
             <Route path="/admin/master/branch-course" element={<BranchCourseMaster />} />
             <Route path="/admin/master/financial-config" element={<FinancialConfig />} />
+            <Route path="/admin/penalty-master" element={<PenaltyMaster />} />
             <Route path="/admin/master/due-date-config" element={<DueDateConfig />} />
             <Route path="/admin/office-bearers" element={<AdminOfficeBearer />} />
+            <Route path="/admin/verify-certificates" element={<CertificateVerification />} />
             {/* Add more admin pages here like /admin-settings, /payroll, etc. */}
           </Route>
 
           {/* User Routes (Wrapped in Orange Layout) */}
           <Route element={<UserLayout />}>
-            <Route path="/user-academic-year" element={<UserAcademicYear />} />
+            
             <Route path="/user/uploads" element={<UserUploads />} />
             <Route path="/user/uploads/degree" element={<DegreeUpload />} />
             <Route path="/user/course-setup" element={<UserCourseMapping />} />
