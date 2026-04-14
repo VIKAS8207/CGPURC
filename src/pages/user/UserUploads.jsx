@@ -92,10 +92,6 @@ const UserUploads = () => {
             className="w-full pl-10 pr-4 py-2.5 bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 focus:border-[#FF6900] transition-all text-sm font-medium text-slate-700"
           />
         </div>
-        <button className="flex items-center gap-2 text-slate-600 bg-white border border-slate-200 px-4 py-2.5 rounded-xl hover:bg-slate-50 transition-all text-sm font-bold w-full sm:w-auto justify-center">
-          <Filter size={18} />
-          Filter Documents
-        </button>
       </div>
 
       {/* Master Modules Grid - ORANGE THEME */}

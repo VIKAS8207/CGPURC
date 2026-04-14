@@ -5,7 +5,7 @@ import {
   Eye, FileText, ChevronRight, ChevronLeft,
   User, School, ShieldCheck, X,
   Check, AlertCircle, CheckSquare, XSquare,
-  Building2, GraduationCap, BookMarked, ChevronDown
+  Building2, GraduationCap, BookMarked, ChevronDown, Filter
 } from 'lucide-react';
 
 const CertificateVerification = () => {
@@ -52,6 +52,7 @@ const CertificateVerification = () => {
   
   const [selectedStudent, setSelectedStudent] = useState(null); 
   const [draftReview, setDraftReview] = useState(null); 
+  const [openDropdown, setOpenDropdown] = useState(null); // Used for Status Filter Dropdown
   
   // --- EDUNUT PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -87,6 +88,17 @@ const CertificateVerification = () => {
     { id: 19, regNo: "REG2026960", studentName: "Ishaan Khatter", college: "GEC Raipur", course: "B.Tech", branch: "Mining", overallStatus: "Pending", semesters: Array.from({length: 8}, (_, i) => ({ sem: i+1, status: "Pending", file: `sem${i+1}.pdf`, documentUrl: dummyPdfUrl, remark: "" })) },
     { id: 20, regNo: "REG2026999", studentName: "Tara Sutaria", college: "Disha Institute", course: "BBA", branch: "Marketing", overallStatus: "Rejected", semesters: Array.from({length: 6}, (_, i) => ({ sem: i+1, status: "Rejected", file: `sem${i+1}.pdf`, documentUrl: dummyPdfUrl, remark: "Invalid enrollment number across all docs." })) }
   ]);
+
+  // Handle clicking outside to close any open dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.dropdown-container')) {
+        setOpenDropdown(null);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // --- DYNAMIC FILTER OPTIONS ---
   const uniqueColleges = useMemo(() => ["All", ...new Set(submissions.map(s => s.college))], [submissions]);
@@ -224,8 +236,8 @@ const CertificateVerification = () => {
           
           {/* College Dropdown */}
           <div className="flex-1 relative dropdown-container">
-            <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 pl-1">
-              <Building2 size={12} /> Select Institution
+            <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2 pl-1">
+              <Building2 size={14} className="text-[#155DFC]" /> Select Institution
             </label>
             <select 
               value={selectedCollege} 
@@ -236,13 +248,13 @@ const CertificateVerification = () => {
                 <option key={college} value={college}>{college === "All" ? "All Institutions" : college}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-[34px] text-slate-400 pointer-events-none" size={16} />
+            <ChevronDown className="absolute right-3 top-[38px] text-slate-400 pointer-events-none" size={16} />
           </div>
 
           {/* Course Dropdown */}
           <div className="flex-1 relative dropdown-container">
-            <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 pl-1">
-              <GraduationCap size={12} /> Select Course
+            <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2 pl-1">
+              <GraduationCap size={14} className="text-[#155DFC]" /> Select Course
             </label>
             <select 
               value={selectedCourse} 
@@ -253,13 +265,13 @@ const CertificateVerification = () => {
                 <option key={course} value={course}>{course === "All" ? "All Courses" : course}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-[34px] text-slate-400 pointer-events-none" size={16} />
+            <ChevronDown className="absolute right-3 top-[38px] text-slate-400 pointer-events-none" size={16} />
           </div>
 
           {/* Branch Dropdown */}
           <div className="flex-1 relative dropdown-container">
-            <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 pl-1">
-              <BookMarked size={12} /> Select Branch
+            <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2 pl-1">
+              <BookMarked size={14} className="text-[#155DFC]" /> Select Branch
             </label>
             <select 
               value={selectedBranch} 
@@ -270,13 +282,13 @@ const CertificateVerification = () => {
                 <option key={branch} value={branch}>{branch === "All" ? "All Branches" : branch}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-[34px] text-slate-400 pointer-events-none" size={16} />
+            <ChevronDown className="absolute right-3 top-[38px] text-slate-400 pointer-events-none" size={16} />
           </div>
         </div>
 
         {/* 3. SEARCH & STATUS FILTER */}
-        <div className="bg-white border border-slate-200 rounded-[10px] p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative flex-1 w-full">
+        <div className="bg-white border border-slate-200 rounded-[10px] p-4 shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full sm:max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input 
               type="text" 
@@ -286,16 +298,31 @@ const CertificateVerification = () => {
               className="w-full pl-11 pr-4 py-2.5 bg-slate-50 border-none shadow-sm rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#155DFC]/20 transition-all font-medium text-sm text-slate-800 placeholder-slate-400"
             />
           </div>
-          <div className="flex bg-slate-50 p-1.5 rounded-[10px] shadow-sm shrink-0 w-full md:w-auto overflow-x-auto border border-slate-100">
-            {["All", "Pending", "Verified", "Rejected"].map(status => (
-              <button 
-                key={status}
-                onClick={() => { setStatusFilter(status); setCurrentPage(1); }}
-                className={`px-6 py-2 rounded-[10px] text-xs font-bold transition-all whitespace-nowrap outline-none ${statusFilter === status ? 'bg-white text-[#155DFC] shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100/50'}`}
-              >
-                {status}
-              </button>
-            ))}
+          
+          {/* EDUNUT FILTER DROPDOWN (For Status) */}
+          <div className="relative dropdown-container w-full sm:w-auto">
+            <button 
+              onClick={() => setOpenDropdown(openDropdown === 'filter' ? null : 'filter')}
+              className="flex items-center gap-2 text-slate-600 bg-white shadow-sm border-none px-4 py-2.5 rounded-[10px] hover:bg-[#155DFC]/10 hover:text-[#155DFC] transition-all text-sm font-bold w-full sm:w-auto justify-center outline-none"
+            >
+              <Filter size={18} />
+              {statusFilter === 'All' ? 'All Statuses' : statusFilter}
+              <ChevronDown size={14} className={`transition-transform duration-200 ${openDropdown === 'filter' ? 'rotate-180 text-[#155DFC]' : ''}`} />
+            </button>
+
+            {openDropdown === 'filter' && (
+              <div className="absolute right-0 top-12 w-48 bg-white rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 border-none">
+                {["All", "Pending", "Verified", "Rejected"].map(status => (
+                  <button
+                    key={status}
+                    onClick={() => { setStatusFilter(status); setOpenDropdown(null); setCurrentPage(1); }}
+                    className={`w-full text-left px-4 py-2.5 text-sm font-bold transition-colors outline-none ${statusFilter === status ? 'bg-[#155DFC]/10 text-[#155DFC]' : 'text-slate-700 hover:bg-[#155DFC]/10 hover:text-[#155DFC]'}`}
+                  >
+                    {status === 'All' ? 'All Statuses' : status}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
