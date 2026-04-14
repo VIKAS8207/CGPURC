@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
-  LayoutDashboard, Users, BookOpen, Settings, 
-  Bell, Search, Menu, ChevronDown, ChevronRight, Briefcase,
-  LogOut, ChevronsLeft, Calendar, User, CalendarDays, UploadCloud, HandCoins, 
-  GraduationCap, FileText
+  ChevronsLeft, 
+  Menu, 
+  LayoutDashboard, 
+  ChevronDown, 
+  ChevronRight, 
+  BookOpen, 
+  BarChart3,
+  User,
+  LogOut,
+  Bell,
+  Users,
+  GraduationCap,
+  CalendarDays,
+  UploadCloud,
+  Briefcase,
+  HandCoins,
+  FileText,
+  Search
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -15,12 +29,30 @@ const UserLayout = () => {
   const [isReportsOpen, setIsReportsOpen] = useState(false);
   
   // --- NAVBAR STATES ---
+  const [isSessionDropdownOpen, setIsSessionDropdownOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState("2025-26");
+  const sessionDropdownRef = useRef(null);
 
   const location = useLocation();
 
   // Helper to check active link
   const isActive = (path) => location.pathname === path;
+
+  // Handle click outside for custom dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sessionDropdownRef.current && !sessionDropdownRef.current.contains(event.target)) {
+        setIsSessionDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const sessionOptions = [
+    { label: "2025 — 2026", value: "2025-26" },
+    { label: "2026 — 2027", value: "2026-27" }
+  ];
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
@@ -96,20 +128,20 @@ const UserLayout = () => {
 
           {/* Student Data Link */}
           <Link to="/user/uploads/student-data" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/student-data') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-          <Users size={20} className={isActive('/user/uploads/student-data') ? 'text-orange-600' : 'text-slate-400'} />
-          {isSidebarOpen && <span>Student Data</span>}
+            <Users size={20} className={isActive('/user/uploads/student-data') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Student Data</span>}
           </Link>
 
           {/* Degree Certificates Link */}
           <Link to="/user/uploads/degree" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/degree') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-          <GraduationCap size={20} className={isActive('/user/uploads/degree') ? 'text-orange-600' : 'text-slate-400'} />
-          {isSidebarOpen && <span>Degree Certificates</span>}
+            <GraduationCap size={20} className={isActive('/user/uploads/degree') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Degree Certificates</span>}
           </Link>
 
           {/* Academic Calendar Link */}
           <Link to="/user/uploads/academic-calendar" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/academic-calendar') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-          <CalendarDays size={20} className={isActive('/user/uploads/academic-calendar') ? 'text-orange-600' : 'text-slate-400'} />
-          {isSidebarOpen && <span>Academic Calendar</span>}
+            <CalendarDays size={20} className={isActive('/user/uploads/academic-calendar') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>Academic Calendar</span>}
           </Link>
 
           <Link to="/user/uploads" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
@@ -163,66 +195,62 @@ const UserLayout = () => {
             )}
           </div>
 
-          <Link to="/user-profile" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user-profile') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-            <Users size={20} className={isActive('/user-profile') ? 'text-orange-600' : 'text-slate-400'} />
-            {isSidebarOpen && <span>Users & Profile</span>}
-          </Link>
+
 
           {/* REPORTS DROPDOWN */}
-<div>
-  <button 
-    onClick={() => {
-      setIsReportsOpen(!isReportsOpen);
-      if (!isSidebarOpen) setIsSidebarOpen(true);
-      // Optional: Close other dropdowns when this one opens
-      setIsAcademicsOpen(false); 
-    }}
-    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
-  >
-    <div className="flex items-center gap-3">
-      <FileText size={20} className="text-slate-400" />
-      {isSidebarOpen && <span>Reports</span>}
-    </div>
-    {isSidebarOpen && (
-      isReportsOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
-    )}
-  </button>
-  
-  {isSidebarOpen && isReportsOpen && (
-    <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
-      <Link 
-        to="/reports/courses-branches" 
-        className={`block py-2 text-sm transition-colors ${isActive('/reports/courses-branches') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
-      >
-        Courses & Branches
-      </Link>
-      <Link 
-        to="/reports/student-list" 
-        className={`block py-2 text-sm transition-colors ${isActive('/reports/student-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
-      >
-        Student List
-      </Link>
-      <Link 
-        to="/reports/bearer-list" 
-        className={`block py-2 text-sm transition-colors ${isActive('/reports/bearer-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
-      >
-        Bearer List
-      </Link>
-      <Link 
-        to="/reports/fees-report" 
-        className={`block py-2 text-sm transition-colors ${isActive('/reports/fees-report') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
-      >
-        Fees Report
-      </Link>
-      <Link 
-        to="/reports/session-wise" 
-        className={`block py-2 text-sm transition-colors ${isActive('/reports/session-wise') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
-      >
-        Course-Session Wise Report
-      </Link>
-    </div>
-  )}
-</div>
+          <div>
+            <button 
+              onClick={() => {
+                setIsReportsOpen(!isReportsOpen);
+                if (!isSidebarOpen) setIsSidebarOpen(true);
+                setIsAcademicsOpen(false); 
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <BarChart3 size={20} className="text-slate-400" />
+                {isSidebarOpen && <span>Reports</span>}
+              </div>
+              {isSidebarOpen && (
+                isReportsOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
+              )}
+            </button>
+            
+            {isSidebarOpen && isReportsOpen && (
+              <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
+                <Link 
+                  to="/reports/courses-branches" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/courses-branches') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Courses & Branches
+                </Link>
+                <Link 
+                  to="/reports/student-list" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/student-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Student List
+                </Link>
+                <Link 
+                  to="/reports/bearer-list" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/bearer-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Bearer List
+                </Link>
+                <Link 
+                  to="/reports/fees-report" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/fees-report') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Fees Report
+                </Link>
+                <Link 
+                  to="/reports/session-wise" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/session-wise') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                >
+                  Course-Session Wise Report
+                </Link>
+              </div>
+            )}
+          </div>
 
         </nav>
 
@@ -250,37 +278,77 @@ const UserLayout = () => {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] hidden lg:block">
+            <div className="flex items-center gap-4">
+              <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] hidden lg:block">
                 Academic Session
               </span>
-              <div className="relative group">
-                <select 
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(e.target.value)}
-                  className="appearance-none bg-white border-2 border-orange-100 hover:border-orange-500 text-orange-700 text-sm font-bold py-2 pl-4 pr-10 rounded-xl outline-none focus:ring-4 focus:ring-orange-500/10 cursor-pointer transition-all shadow-sm"
+
+              <div className="relative" ref={sessionDropdownRef}>
+                {/* The Depth Cutout Pill (Trigger) */}
+                <button
+                  onClick={() => setIsSessionDropdownOpen(!isSessionDropdownOpen)}
+                  className="relative flex items-center bg-slate-100 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] transition-all duration-300 h-[40px] px-6 min-w-[170px] outline-none group border-none"
                 >
-                  <option value="2025-26">2025 - 2026</option>
-                  <option value="2026-27">2026 - 2027</option>
-                </select>
-                <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none group-hover:scale-110 transition-transform" />
+                  <span className={`text-sm font-black transition-colors duration-300 ${isSessionDropdownOpen ? 'text-[#FF6900]' : 'text-slate-700'}`}>
+                    {sessionOptions.find(opt => opt.value === selectedYear)?.label}
+                  </span>
+                  
+                  <div className="absolute right-4 pointer-events-none flex items-center justify-center border-l border-slate-300/50 pl-2">
+                    <ChevronDown 
+                      size={16} 
+                      className={`transition-all duration-300 ${isSessionDropdownOpen ? 'text-[#FF6900] rotate-180' : 'text-slate-400'}`} 
+                    />
+                  </div>
+                </button>
+
+                {/* EDUNUT UI DROPDOWN MENU */}
+                {isSessionDropdownOpen && (
+                  <div className="absolute top-[calc(100%+8px)] right-0 w-full min-w-[180px] bg-white rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] py-2 z-[100] border-none animate-in fade-in zoom-in-95 duration-200">
+                    {sessionOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setSelectedYear(option.value);
+                          setIsSessionDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-5 py-3 text-sm font-bold transition-all flex items-center justify-between
+                          ${selectedYear === option.value 
+                            ? 'text-[#FF6900] bg-orange-50' 
+                            : 'text-slate-600 hover:bg-orange-50 hover:text-[#FF6900]'
+                          }`}
+                      >
+                        {option.label}
+                        {selectedYear === option.value && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#FF6900]"></div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            <button className="relative p-2 text-slate-400 hover:text-orange-600 transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
-            </button>
             <div className="h-8 w-px bg-slate-200 mx-1"></div>
-            <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity pl-2">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-semibold text-slate-700 leading-tight">Student User</p>
-                <p className="text-xs text-slate-500 font-medium">Computer Science</p>
-              </div>
-              <div className="w-10 h-10 bg-orange-100 rounded-full border-2 border-orange-200 flex items-center justify-center text-orange-600 shadow-sm">
-                <User size={20} />
-              </div>
-            </div>
+            
+            <Link 
+  to="/user-profile" 
+  className="flex items-center gap-3 cursor-pointer pl-2 group transition-all outline-none"
+>
+  {/* Text Section */}
+  <div className="text-right hidden md:block">
+    <p className="text-sm font-semibold text-slate-700 leading-tight group-hover:text-[#FF6900] transition-colors">
+      Student User
+    </p>
+    <p className="text-xs text-slate-500 font-medium">
+      Computer Science
+    </p>
+  </div>
+
+  {/* Avatar Section */}
+  <div className="w-10 h-10 bg-orange-100 rounded-full border-2 border-orange-200 flex items-center justify-center text-orange-600 shadow-sm group-hover:bg-[#FF6900] group-hover:text-white group-hover:border-[#FF6900] transition-all duration-300">
+    <User size={20} />
+  </div>
+</Link>
           </div>
         </header>
 

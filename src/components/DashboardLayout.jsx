@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
@@ -9,12 +9,33 @@ import {
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAcademicsOpen, setIsAcademicsOpen] = useState(false);
-  
   const [isReportsOpen, setIsReportsOpen] = useState(false);
+  
+  // --- SESSION DROPDOWN STATES ---
+  const [isSessionDropdownOpen, setIsSessionDropdownOpen] = useState(false);
+  const [selectedYear, setSelectedYear] = useState("2025-26");
+  const sessionDropdownRef = useRef(null);
+
   const location = useLocation();
 
   // Helper to check active link
   const isActive = (path) => location.pathname === path;
+
+  // Handle click outside for custom dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sessionDropdownRef.current && !sessionDropdownRef.current.contains(event.target)) {
+        setIsSessionDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const sessionOptions = [
+    { label: "2025 — 2026", value: "2025-26" },
+    { label: "2026 — 2027", value: "2026-27" }
+  ];
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
@@ -57,12 +78,12 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Master</span>}
           </Link>
 
-          {/* DROPDOWN MENU ITEM (Academics) */}
+          {/* ACADEMICS DROPDOWN */}
           <div>
             <button 
               onClick={() => {
                 setIsAcademicsOpen(!isAcademicsOpen);
-                if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
+                if (!isSidebarOpen) setIsSidebarOpen(true);
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
@@ -75,7 +96,6 @@ const DashboardLayout = () => {
               )}
             </button>
             
-            {/* Dropdown Content */}
             {isSidebarOpen && isAcademicsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
                 <Link 
@@ -112,21 +132,17 @@ const DashboardLayout = () => {
             {isSidebarOpen && <span>Add University</span>}
           </Link>
 
-          
- 
-
           <Link to="/admin/verify-certificates" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/verify-certificates') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <FileCheck2 size={20} className={isActive('/admin/verify-certificates') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Verify Certificates</span>}
           </Link>
 
-
-          {/* DROPDOWN MENU ITEM (Reports) */}
+          {/* REPORTS DROPDOWN */}
           <div>
             <button 
               onClick={() => {
                 setIsReportsOpen(!isReportsOpen);
-                if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
+                if (!isSidebarOpen) setIsSidebarOpen(true);
               }}
               className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             >
@@ -139,43 +155,13 @@ const DashboardLayout = () => {
               )}
             </button>
             
-            {/* Dropdown Content */}
             {isSidebarOpen && isReportsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
-                <Link 
-                  to="/admin/reports/students" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
-                >
-                  Students Report
-                </Link>
-
-                <Link 
-                  to="/admin/reports/students-enrolled" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students-enrolled') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
-                >
-                  Students Enrolled Report
-                </Link>
-                
-                <Link 
-                  to="/admin/reports/university-fees" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
-                >
-                  University 1% Fees Report
-                </Link>
-
-                <Link 
-                  to="/admin/reports/pending-fees" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/pending-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
-                >
-                  Pending Fees Files
-                </Link>
-
-                <Link 
-                  to="/admin/reports/university-courses" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-courses') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
-                >
-                  University Wise Course Report
-                </Link>
+                <Link to="/admin/reports/students" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Report</Link>
+                <Link to="/admin/reports/students-enrolled" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students-enrolled') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Enrolled Report</Link>
+                <Link to="/admin/reports/university-fees" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University 1% Fees Report</Link>
+                <Link to="/admin/reports/pending-fees" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/pending-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Pending Fees Files</Link>
+                <Link to="/admin/reports/university-courses" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-courses') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University Wise Course Report</Link>
               </div>
             )}
           </div>
@@ -207,24 +193,73 @@ const DashboardLayout = () => {
           </div>
 
           {/* Right Header Actions */}
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 text-slate-400 hover:text-blue-600 transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-            </button>
-            <div className="h-8 w-px bg-slate-200 mx-2"></div>
-            <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
+          <div className="flex items-center gap-6">
+            
+            {/* ACADEMIC SESSION PILL - EDUNUT BLUE UI */}
+            <div className="flex items-center gap-4">
+              <span className="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] hidden lg:block">
+                Academic Session
+              </span>
+
+              <div className="relative" ref={sessionDropdownRef}>
+                <button
+                  onClick={() => setIsSessionDropdownOpen(!isSessionDropdownOpen)}
+                  className="relative flex items-center bg-slate-100 rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] transition-all duration-300 h-[40px] px-6 min-w-[170px] outline-none group border-none"
+                >
+                  <span className={`text-sm font-black transition-colors duration-300 ${isSessionDropdownOpen ? 'text-blue-600' : 'text-slate-700'}`}>
+                    {sessionOptions.find(opt => opt.value === selectedYear)?.label}
+                  </span>
+                  
+                  <div className="absolute right-4 pointer-events-none flex items-center justify-center border-l border-slate-300/50 pl-2">
+                    <ChevronDown 
+                      size={16} 
+                      className={`transition-all duration-300 ${isSessionDropdownOpen ? 'text-blue-600 rotate-180' : 'text-slate-400'}`} 
+                    />
+                  </div>
+                </button>
+
+                {/* DROPDOWN MENU */}
+                {isSessionDropdownOpen && (
+                  <div className="absolute top-[calc(100%+8px)] right-0 w-full min-w-[180px] bg-white rounded-[20px] shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1)] py-2 z-[100] border-none animate-in fade-in zoom-in-95 duration-200">
+                    {sessionOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setSelectedYear(option.value);
+                          setIsSessionDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-5 py-3 text-sm font-bold transition-all flex items-center justify-between
+                          ${selectedYear === option.value 
+                            ? 'text-blue-700 bg-blue-50' 
+                            : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'
+                          }`}
+                      >
+                        {option.label}
+                        {selectedYear === option.value && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="h-8 w-px bg-slate-200 mx-1"></div>
+            
+            <div className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity pl-2">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-semibold text-slate-700 leading-tight">Admin User</p>
-                <p className="text-xs text-slate-500">Principal</p>
+                <p className="text-xs text-slate-500 font-medium">Principal</p>
               </div>
-              <img src="https://ui-avatars.com/api/?name=Admin+User&background=eff6ff&color=1d4ed8" alt="Profile" className="w-9 h-9 rounded-full border border-slate-200" />
+              <img src="https://ui-avatars.com/api/?name=Admin+User&background=eff6ff&color=1d4ed8" alt="Profile" className="w-10 h-10 rounded-full border-2 border-blue-100 shadow-sm" />
             </div>
           </div>
         </header>
 
-        {/* PAGE CONTENT GOES HERE (The Outlet) */}
-        <main className="flex-1 overflow-y-auto p-8">
+        {/* PAGE CONTENT */}
+        <main className="flex-1 overflow-y-auto p-8 relative">
+          <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none -z-10"></div>
           <Outlet /> 
         </main>
 

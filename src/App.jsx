@@ -28,6 +28,7 @@ import UserPaymentHistory from "./pages/user/UserPaymentHistory";
 import UserProfile from "./pages/user/UserProfile";
 import StudentFeesUpload from "./pages/user/uploadpages/StudentFeesUpload";
 import StudentPromotion from "./pages/user/StudentPromotion";
+import UserDashboard from "./pages/user/UserDashboard";
 
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
@@ -82,7 +83,8 @@ function App() {
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/upload-fees" element={<StudentFeesUpload />} />
             <Route path="/user/student-promotion" element={<StudentPromotion />} />
-            {/* You can add more user pages here later like /my-courses, /grades */}
+            <Route path="user-dashboard" element={<UserDashboard />} />
+            {/* You can add more user pages here later like /my-courses, /grades */} 
           </Route>
           
         </Routes>
