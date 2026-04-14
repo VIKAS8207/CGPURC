@@ -28,7 +28,7 @@ const UserUploads = () => {
       status: "Required",
       color: "text-blue-600", 
       bg: "bg-blue-50",
-      link: "#" 
+      link: "/upload-fees" 
     }
   ];
 

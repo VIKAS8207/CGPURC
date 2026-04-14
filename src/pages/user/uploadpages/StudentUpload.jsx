@@ -6,8 +6,8 @@ import {
   Search, Eye, Edit2, Trash2, FileText, ChevronLeft, 
   ChevronRight, AlertTriangle, CheckCircle2, XCircle, PieChart,
   ArrowLeft, Layers, ChevronDown, X, ShieldCheck, MoreVertical,
-  User, Clock,
-  Landmark, Hash // <--- ADD THESE TWO
+  User, Clock, Landmark, Hash,
+  FileCheck, RefreshCcw, IndianRupee // <--- ADD THESE THREE
 } from 'lucide-react';
 
 const StudentDataUpload = () => {
@@ -46,6 +46,9 @@ const StudentDataUpload = () => {
       );
     });
   };
+
+  const [bulkStatus, setBulkStatus] = useState('idle'); // 'idle' or 'reviewed'
+
 
   // --- UI STATES ---
   const [uploadMode, setUploadMode] = useState('manual'); // Default to manual
@@ -715,200 +718,114 @@ const StudentDataUpload = () => {
           )}
 
           {/* ================= BULK UPLOAD ================= */}
-          {uploadMode === 'bulk' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-right-4 duration-300">
-              
-              {/* Left Side: Form */}
-              <div className="lg:col-span-2">
-                <form onSubmit={handleBulkSubmit}>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                      {/* Academic Year Dropdown */}
-                      <div className="relative dropdown-container">
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Target Academic Session</label>
-                        <button 
-                          type="button"
-                          onClick={() => setOpenDropdown(openDropdown === 'bulkYear' ? null : 'bulkYear')}
-                          className="w-full flex items-center justify-between px-4 py-3.5 bg-slate-50 border-none shadow-sm rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all font-medium text-slate-800 cursor-pointer outline-none h-[50px]"
-                        >
-                          <span className={bulkData.academicYear ? "text-slate-800" : "text-slate-400"}>
-                            {bulkData.academicYear || "Select Session..."}
-                          </span>
-                          <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${openDropdown === 'bulkYear' ? 'rotate-180' : ''}`} />
-                        </button>
-                        {openDropdown === 'bulkYear' && (
-                          <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 border border-slate-100 max-h-60 overflow-y-auto">
-                            {academicYears.map((year, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => handleBulkCustomSelect('academicYear', year)}
-                                className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors outline-none hover:bg-[#FF6900]/10 hover:text-[#FF6900] ${bulkData.academicYear === year ? 'bg-[#FF6900]/10 text-[#FF6900]' : 'text-slate-700'}`}
-                              >
-                                {year}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Course Dropdown */}
-                      <div className="relative dropdown-container">
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Course</label>
-                        <button 
-                          type="button"
-                          onClick={() => setOpenDropdown(openDropdown === 'bulkCourse' ? null : 'bulkCourse')}
-                          className="w-full flex items-center justify-between px-4 py-3.5 bg-slate-50 border-none shadow-sm rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all font-medium text-slate-800 cursor-pointer outline-none h-[50px]"
-                        >
-                          <span className={bulkData.course ? "text-slate-800" : "text-slate-400"}>
-                            {bulkData.course || "Select Course..."}
-                          </span>
-                          <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${openDropdown === 'bulkCourse' ? 'rotate-180' : ''}`} />
-                        </button>
-                        {openDropdown === 'bulkCourse' && (
-                          <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 border border-slate-100 max-h-60 overflow-y-auto">
-                            {courses.map((course, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => handleBulkCustomSelect('course', course)}
-                                className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors outline-none hover:bg-[#FF6900]/10 hover:text-[#FF6900] ${bulkData.course === course ? 'bg-[#FF6900]/10 text-[#FF6900]' : 'text-slate-700'}`}
-                              >
-                                {course}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Branch Dropdown */}
-                      <div className="relative dropdown-container">
-                        <label className="block text-sm font-semibold text-slate-700 mb-2">Branch</label>
-                        <button 
-                          type="button"
-                          onClick={() => setOpenDropdown(openDropdown === 'bulkBranch' ? null : 'bulkBranch')}
-                          className="w-full flex items-center justify-between px-4 py-3.5 bg-slate-50 border-none shadow-sm rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all font-medium text-slate-800 cursor-pointer outline-none h-[50px]"
-                        >
-                          <span className={bulkData.branch ? "text-slate-800" : "text-slate-400"}>
-                            {bulkData.branch || "Select Branch..."}
-                          </span>
-                          <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${openDropdown === 'bulkBranch' ? 'rotate-180' : ''}`} />
-                        </button>
-                        {openDropdown === 'bulkBranch' && (
-                          <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 border border-slate-100 max-h-60 overflow-y-auto">
-                            {branches.map((branch, idx) => (
-                              <button
-                                key={idx}
-                                type="button"
-                                onClick={() => handleBulkCustomSelect('branch', branch)}
-                                className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors outline-none hover:bg-[#FF6900]/10 hover:text-[#FF6900] ${bulkData.branch === branch ? 'bg-[#FF6900]/10 text-[#FF6900]' : 'text-slate-700'}`}
-                              >
-                                {branch}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                  </div>
-
-                  <div className="mb-8">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">Upload Data File (.xlsx)</label>
-                    {selectedFile ? (
-                        <div className="flex items-center justify-between px-4 py-3.5 bg-emerald-50 border border-emerald-200 shadow-sm rounded-[10px]">
-                        <div className="flex items-center gap-4 overflow-hidden">
-                            <div className="p-3 bg-white border border-emerald-100 rounded-[10px] shrink-0">
-                                <FileSpreadsheet className="text-emerald-600" size={24} />
-                            </div>
-                            <div className="truncate">
-                            <p className="text-base font-bold text-slate-800 truncate" title={selectedFile.name}>{selectedFile.name}</p>
-                            <p className="text-sm font-medium text-slate-500">Ready to process</p>
-                            </div>
-                        </div>
-                        <button type="button" onClick={() => setSelectedFile(null)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-white rounded-[10px] transition-colors outline-none shrink-0 border border-transparent hover:border-red-100">
-                            <X size={20} />
-                        </button>
-                        </div>
-                    ) : (
-                        <div className="border-2 border-dashed border-slate-300 rounded-[10px] bg-slate-50 hover:bg-[#FF6900]/5 hover:border-[#FF6900]/40 transition-all flex flex-col items-center justify-center p-12 cursor-pointer group shadow-sm">
-                        <div className="p-4 bg-white border border-slate-200 rounded-full mb-4 group-hover:scale-110 transition-transform shadow-sm">
-                            <UploadCloud size={32} className="text-slate-400 group-hover:text-[#FF6900] transition-colors" />
-                        </div>
-                        <p className="text-slate-800 font-bold mb-1">Click to upload or drag and drop</p>
-                        <p className="text-slate-500 text-sm mb-4">Strictly .xlsx or .xls formats</p>
-                        <input type="file" accept=".xlsx, .xls" className="hidden" id="bulk-upload" onChange={handleFileChange} />
-                        <label htmlFor="bulk-upload" className="bg-white border border-slate-200 text-slate-700 px-6 py-2.5 rounded-[10px] font-bold text-sm cursor-pointer shadow-sm hover:text-[#FF6900] hover:border-[#FF6900]/40 transition-all">
-                            Browse Files
-                        </label>
-                        </div>
-                    )}
-                  </div>
-
-                  <div className="pt-6 border-t border-slate-100 flex justify-start">
-                    <button type="submit" className="w-full sm:w-auto bg-[#FF6900] hover:bg-[#FF6900]/90 text-white px-8 py-3.5 rounded-[10px] font-bold text-sm shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 outline-none">
-                        <UploadCloud size={18} />
-                        Process & Upload Batch
-                    </button>
-                  </div>
-                </form>
-              </div>
-
-              {/* Right Side: Conditional Overview */}
-              <div className="lg:col-span-1">
-                <div className="bg-slate-50 border border-slate-200 rounded-[10px] p-6 h-full flex flex-col shadow-sm">
-                  {!isProcessed ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4">
-                      <div className="w-16 h-16 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-300 shadow-sm">
-                        <PieChart size={32} />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-slate-500 tracking-tight">Analysis Pending</h4>
-                        <p className="text-xs font-medium text-slate-400 mt-1">Upload a file to see validation details.</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="animate-in fade-in duration-500 h-full flex flex-col">
-                      <div className="flex items-center gap-2 mb-6 border-b border-slate-200 pb-4">
-                        <PieChart className="text-[#FF6900]" size={20} />
-                        <h3 className="font-bold text-slate-800 uppercase text-xs tracking-widest">Batch Results</h3>
-                      </div>
-
-                      <div className="space-y-3 mb-6">
-                        <div className="bg-white p-4 rounded-[10px] border border-slate-200 shadow-sm flex items-center justify-between">
-                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Rows</p>
-                          <p className="font-black text-slate-800 text-lg">150</p>
-                        </div>
-                        <div className="bg-emerald-50 p-4 rounded-[10px] border border-emerald-100 shadow-sm flex items-center justify-between">
-                          <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Success</p>
-                          <p className="font-black text-emerald-700 text-lg">148</p>
-                        </div>
-                        <div className="bg-red-50 p-4 rounded-[10px] border border-red-100 shadow-sm flex items-center justify-between">
-                          <p className="text-xs font-bold text-red-600 uppercase tracking-widest">Errors</p>
-                          <p className="font-black text-red-700 text-lg">2</p>
-                        </div>
-                      </div>
-
-                      <div className="flex-1 bg-white border border-slate-200 rounded-[10px] overflow-hidden flex flex-col shadow-sm">
-                        <div className="bg-red-50/50 p-3.5 border-b border-slate-100 flex items-center gap-2">
-                          <AlertTriangle size={16} className="text-red-500" />
-                          <span className="text-xs font-bold text-red-700 uppercase tracking-wider">Incomplete Records</span>
-                        </div>
-                        <div className="p-3 space-y-3 overflow-y-auto max-h-48">
-                          <div className="text-xs border border-slate-100 p-2 rounded-lg bg-slate-50">
-                            <p className="font-bold text-slate-700">Row 45: Missing Value</p>
-                            <p className="text-red-600 font-medium italic mt-0.5">Missing Mobile Number</p>
-                          </div>
-                          <div className="text-xs border border-slate-100 p-2 rounded-lg bg-slate-50">
-                            <p className="font-bold text-slate-700">Row 102: Data Format</p>
-                            <p className="text-red-600 font-medium italic mt-0.5">Invalid Gender Value</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+          {/* ================= BULK UPLOAD ================= */}
+{uploadMode === 'bulk' && (
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-in slide-in-from-right-4 duration-300">
+    
+    {/* Left Side: Course Selection & File Upload */}
+    <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="relative dropdown-container">
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Target Course</label>
+          <button type="button" onClick={() => setOpenDropdown(openDropdown === 'bCourse' ? null : 'bCourse')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
+            <span>{bulkData.course || "Select Course"}</span>
+            <ChevronDown size={16} className="text-slate-400" />
+          </button>
+          {openDropdown === 'bCourse' && (
+            <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100 overflow-hidden">
+              {courses.map(c => <button key={c} type="button" onClick={() => handleBulkCustomSelect('course', c)} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{c}</button>)}
             </div>
           )}
+        </div>
+        <div className="relative dropdown-container">
+          <label className="block text-sm font-semibold text-slate-700 mb-2">Target Branch</label>
+          <button type="button" onClick={() => setOpenDropdown(openDropdown === 'bBranch' ? null : 'bBranch')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
+            <span>{bulkData.branch || "Select Branch"}</span>
+            <ChevronDown size={16} className="text-slate-400" />
+          </button>
+          {openDropdown === 'bBranch' && (
+            <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100 overflow-hidden">
+              {branches.map(b => <button key={b} type="button" onClick={() => handleBulkCustomSelect('branch', b)} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{b}</button>)}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {!selectedFile ? (
+        <label className="border-2 border-dashed border-slate-300 rounded-[10px] bg-slate-50 hover:bg-[#FF6900]/5 hover:border-[#FF6900]/40 transition-all flex flex-col items-center justify-center p-12 cursor-pointer group shadow-sm min-h-[250px]">
+          <div className="p-4 bg-white border border-slate-200 rounded-full mb-4 group-hover:scale-110 transition-transform shadow-sm text-slate-400 group-hover:text-[#FF6900]">
+            <UploadCloud size={32} />
+          </div>
+          <p className="text-slate-800 font-bold mb-1">Click to browse student spreadsheet</p>
+          <p className="text-slate-500 text-xs mb-4">Supports .xlsx or .xls (Max 10MB)</p>
+          <input type="file" className="hidden" accept=".xlsx" onChange={handleFileChange} />
+          <div className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-[8px] font-bold text-sm shadow-sm group-hover:bg-[#FF6900] group-hover:text-white transition-colors">Browse Files</div>
+        </label>
+      ) : (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-[10px] p-8 flex flex-col items-center justify-center relative min-h-[250px]">
+          <button onClick={() => setSelectedFile(null)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-white rounded-full transition-all"><X size={20}/></button>
+          <FileCheck size={48} className="text-emerald-500 mb-4" />
+          <p className="text-emerald-900 font-black text-lg">{selectedFile.name}</p>
+          <div className="mt-4 flex gap-4">
+            <button onClick={() => {setIsProcessed(true); setBulkStatus('idle');}} className="bg-emerald-600 text-white px-6 py-2 rounded-[8px] font-bold shadow-md flex items-center gap-2 hover:bg-emerald-700 transition-all">
+              <Eye size={16}/> Review Data
+            </button>
+            <button onClick={() => setSelectedFile(null)} className="bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-[8px] font-bold flex items-center gap-2 hover:bg-slate-50 transition-all">
+              <RefreshCcw size={16}/> Re-upload
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+
+    {/* Right Side: Status Box & Submit Button */}
+    <div className="lg:col-span-1 bg-slate-50 border border-slate-200 rounded-[10px] p-6 h-full flex flex-col min-h-[250px]">
+      {!isProcessed ? (
+        <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40">
+          <PieChart size={32} className="text-slate-400 mb-2" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Analysis Pending</p>
+        </div>
+      ) : (
+        <div className="animate-in fade-in duration-500 flex flex-col h-full">
+          <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2 flex items-center gap-2">
+            <AlertTriangle size={14} className="text-[#FF6900]" /> Status Box
+          </h4>
+          <div className="space-y-4 flex-1">
+            <div className="flex justify-between items-center text-xs font-bold">
+              <span className="text-slate-500">TOTAL DATA</span>
+              <span className="text-slate-800 bg-white px-2 py-1 rounded border">150</span>
+            </div>
+            <div className="flex justify-between items-center text-xs font-bold">
+              <span className="text-emerald-600">ACCEPTED</span>
+              <span className="text-emerald-700 bg-emerald-100 px-2 py-1 rounded border border-emerald-200">142</span>
+            </div>
+            <div className="flex justify-between items-center text-xs font-bold">
+              <span className="text-red-600">REJECTED</span>
+              <span className="text-red-700 bg-red-100 px-2 py-1 rounded border border-red-200">08</span>
+            </div>
+            <div className="p-3 bg-red-50 rounded-[8px] border border-red-100">
+              <p className="text-[10px] font-black text-red-700 uppercase mb-2">Error Logs:</p>
+              <p className="text-[10px] text-red-500 italic mb-1">• Row 14: Mobile field empty</p>
+              <p className="text-[10px] text-red-500 italic">• Row 89: Invalid Email format</p>
+            </div>
+          </div>
+          
+          <button 
+            onClick={() => {
+              if (bulkStatus === 'idle') { setBulkStatus('reviewed'); } 
+              else { handleBulkAction(); }
+            }} 
+            className={`w-full mt-6 text-white py-3 rounded-[10px] font-black uppercase text-xs tracking-widest shadow-lg transition-all ${
+              bulkStatus === 'idle' ? 'bg-slate-900 shadow-slate-200' : 'bg-[#FF6900] shadow-orange-100 animate-pulse'
+            }`}
+          >
+            {bulkStatus === 'idle' ? 'Finalize & Review' : 'Confirm & Submit'}
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+)}
         </div>
       </div>
 

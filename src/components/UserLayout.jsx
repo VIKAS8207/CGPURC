@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, Briefcase,
   LogOut, ChevronsLeft, Calendar, User, CalendarDays, UploadCloud, HandCoins, 
-  GraduationCap
+  GraduationCap, FileText
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -12,6 +12,7 @@ const UserLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAcademicsOpen, setIsAcademicsOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isReportsOpen, setIsReportsOpen] = useState(false);
   
   // --- NAVBAR STATES ---
   const [selectedYear, setSelectedYear] = useState("2025-26");
@@ -116,6 +117,11 @@ const UserLayout = () => {
             {isSidebarOpen && <span>Bulk Uploads</span>}
           </Link>
 
+          <Link to="/user/student-promotion" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/student-promotion') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+            <Briefcase size={20} className={isActive('/user/student-promotion') ? 'text-orange-600' : 'text-slate-400'} />
+            {isSidebarOpen && <span>StudentPromotion</span>}
+          </Link>
+
           <Link to="/user/office-bearers" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/office-bearers') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <Briefcase size={20} className={isActive('/user/office-bearers') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Office Bearer</span>}
@@ -161,6 +167,62 @@ const UserLayout = () => {
             <Users size={20} className={isActive('/user-profile') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Users & Profile</span>}
           </Link>
+
+          {/* REPORTS DROPDOWN */}
+<div>
+  <button 
+    onClick={() => {
+      setIsReportsOpen(!isReportsOpen);
+      if (!isSidebarOpen) setIsSidebarOpen(true);
+      // Optional: Close other dropdowns when this one opens
+      setIsAcademicsOpen(false); 
+    }}
+    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+  >
+    <div className="flex items-center gap-3">
+      <FileText size={20} className="text-slate-400" />
+      {isSidebarOpen && <span>Reports</span>}
+    </div>
+    {isSidebarOpen && (
+      isReportsOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
+    )}
+  </button>
+  
+  {isSidebarOpen && isReportsOpen && (
+    <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
+      <Link 
+        to="/reports/courses-branches" 
+        className={`block py-2 text-sm transition-colors ${isActive('/reports/courses-branches') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+      >
+        Courses & Branches
+      </Link>
+      <Link 
+        to="/reports/student-list" 
+        className={`block py-2 text-sm transition-colors ${isActive('/reports/student-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+      >
+        Student List
+      </Link>
+      <Link 
+        to="/reports/bearer-list" 
+        className={`block py-2 text-sm transition-colors ${isActive('/reports/bearer-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+      >
+        Bearer List
+      </Link>
+      <Link 
+        to="/reports/fees-report" 
+        className={`block py-2 text-sm transition-colors ${isActive('/reports/fees-report') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+      >
+        Fees Report
+      </Link>
+      <Link 
+        to="/reports/session-wise" 
+        className={`block py-2 text-sm transition-colors ${isActive('/reports/session-wise') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+      >
+        Course-Session Wise Report
+      </Link>
+    </div>
+  )}
+</div>
 
         </nav>
 

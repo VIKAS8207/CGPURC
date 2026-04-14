@@ -26,6 +26,8 @@ import UserOfficeBearer from "./pages/user/UserOfficeBearer";
 import UserPayFees from "./pages/user/UserPayFees";
 import UserPaymentHistory from "./pages/user/UserPaymentHistory";
 import UserProfile from "./pages/user/UserProfile";
+import StudentFeesUpload from "./pages/user/uploadpages/StudentFeesUpload";
+import StudentPromotion from "./pages/user/StudentPromotion";
 
 
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
@@ -78,7 +80,8 @@ function App() {
             <Route path="/user/pay-fees" element={<UserPayFees />} />
             <Route path="/user/payment-history" element={<UserPaymentHistory />} />
             <Route path="/user-profile" element={<UserProfile />} />
-            
+            <Route path="/upload-fees" element={<StudentFeesUpload />} />
+            <Route path="/user/student-promotion" element={<StudentPromotion />} />
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>
           
