@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
-  Bell, Search, Menu, ChevronDown, ChevronRight, 
-  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School, BarChart3,
+  Bell, Search, Menu, ChevronDown, ChevronRight, FileText,
+  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School, BarChart3, FileCheck2
 } from 'lucide-react';
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isAcademicsOpen, setIsAcademicsOpen] = useState(false);
-  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  
+  const [isReportsOpen, setIsReportsOpen] = useState(false);
   const location = useLocation();
 
   // Helper to check active link
@@ -115,9 +116,69 @@ const DashboardLayout = () => {
  
 
           <Link to="/admin/verify-certificates" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/verify-certificates') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-            <School size={20} className={isActive('/admin/verify-certificates') ? 'text-blue-600' : 'text-slate-400'} />
+            <FileCheck2 size={20} className={isActive('/admin/verify-certificates') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Verify Certificates</span>}
           </Link>
+
+
+          {/* DROPDOWN MENU ITEM (Reports) */}
+          <div>
+            <button 
+              onClick={() => {
+                setIsReportsOpen(!isReportsOpen);
+                if (!isSidebarOpen) setIsSidebarOpen(true); // Open sidebar if closed
+              }}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <FileText size={20} className="text-slate-400" />
+                {isSidebarOpen && <span>Reports</span>}
+              </div>
+              {isSidebarOpen && (
+                isReportsOpen ? <ChevronDown size={16} className="text-slate-400"/> : <ChevronRight size={16} className="text-slate-400"/>
+              )}
+            </button>
+            
+            {/* Dropdown Content */}
+            {isSidebarOpen && isReportsOpen && (
+              <div className="pl-11 pr-3 py-2 space-y-1">
+                <Link 
+                  to="/admin/reports/students" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Students Report
+                </Link>
+
+                <Link 
+                  to="/admin/reports/students-enrolled" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students-enrolled') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Students Enrolled Report
+                </Link>
+                
+                <Link 
+                  to="/admin/reports/university-fees" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  University 1% Fees Report
+                </Link>
+
+                <Link 
+                  to="/admin/reports/pending-fees" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/pending-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  Pending Fees Files
+                </Link>
+
+                <Link 
+                  to="/admin/reports/university-courses" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-courses') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}
+                >
+                  University Wise Course Report
+                </Link>
+              </div>
+            )}
+          </div>
 
         </nav>
 

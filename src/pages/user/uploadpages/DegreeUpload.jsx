@@ -24,6 +24,15 @@ const DegreeDataUpload = () => {
     email: '', phone: '', gender: '', certificateFile: null
   });
 
+  // --- NEW MANUAL ENTRY STATES ---
+  const DUMMY_STUDENTS = [
+    { id: 1, name: "Rahul Sharma", regNumber: "REG-2024-001" },
+    { id: 2, name: "Priya Singh", regNumber: "REG-2024-002" },
+    { id: 3, name: "Amit Kumar", regNumber: "REG-2024-003" },
+  ];
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [semesterFiles, setSemesterFiles] = useState({});
+
   // Dummy Data for Table
   const [uploadHistory, setUploadHistory] = useState([
     { id: 1, academicYear: '2024-2025', collegeName: 'Govt. Engineering College Raipur', fileName: 'final_degrees_batch_A.xlsx', uploadDate: '12 Oct 2024' },
@@ -41,8 +50,10 @@ const DegreeDataUpload = () => {
 
   const handleManualSubmit = (e) => {
     e.preventDefault();
-    console.log('Submitting Manual Data:', manualData);
+    console.log('Submitting Manual Data:', { selectedStudentId, semesterFiles });
     // Reset Logic here
+    setSemesterFiles({});
+    setSelectedStudentId("");
   };
 
   return (
@@ -195,35 +206,15 @@ const DegreeDataUpload = () => {
             <form onSubmit={handleManualSubmit} className="animate-in slide-in-from-right-4 duration-300">
               <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl mb-8">
                 <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-200 pb-3 uppercase tracking-wider">
-                  <BookOpen size={18} className="text-[#FF6900]"/> Course & Semester Info
+                  <BookOpen size={18} className="text-[#FF6900]"/> Search Student & Program
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Academic Year</label>
-                    <select name="academicYear" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium">
-                      <option value="">Select Year</option>
-                      <option value="2024-25">2024-25</option>
-                    </select>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
                     <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Course</label>
                     <select name="course" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium">
                       <option value="">Select Course</option>
                       <option value="B.Tech">B.Tech</option>
-                    </select>
-                  </div>
-                  {/* NEW SEMESTER FIELD */}
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Semester</label>
-                    <select 
-                      name="semester" 
-                      value={manualData.semester} 
-                      onChange={handleManualChange} 
-                      required 
-                      className="w-full px-4 py-2.5 rounded-xl border border-[#FF6900]/40 focus:ring-2 focus:ring-[#FF6900]/20 bg-white font-bold text-[#FF6900]"
-                    >
-                      <option value="">Choose Semester</option>
-                      {[1,2,3,4,5,6,7,8].map(s => <option key={s} value={s}>Semester {s}</option>)}
+                      <option value="M.Tech">M.Tech</option>
                     </select>
                   </div>
                   <div>
@@ -231,49 +222,91 @@ const DegreeDataUpload = () => {
                     <select name="branch" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-medium">
                       <option value="">Select Branch</option>
                       <option value="CS">Computer Science</option>
+                      <option value="ME">Mechanical Engineering</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Student Select</label>
+                    <select 
+                      value={selectedStudentId} 
+                      onChange={(e) => setSelectedStudentId(e.target.value)} 
+                      required 
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-slate-700"
+                    >
+                      <option value="">Search / Select Student</option>
+                      {DUMMY_STUDENTS.map(student => (
+                        <option key={student.id} value={student.id}>
+                          {student.name} - {student.regNumber}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
-
-                {/* DYNAMIC DOCUMENT UPLOAD */}
-                {manualData.semester && (
-                  <div className="mt-8 pt-6 border-t border-slate-200 animate-in fade-in zoom-in-95 duration-300">
-                    <label className="block text-sm font-bold text-slate-800 mb-3">
-                      Upload Semester {manualData.semester} Marksheet / Certificate
-                    </label>
-                    <label className="flex items-center gap-4 p-4 bg-white border-2 border-dashed border-[#FF6900]/30 rounded-2xl cursor-pointer hover:bg-orange-50 transition-all group">
-                      <div className="p-3 bg-orange-100 text-[#FF6900] rounded-xl group-hover:scale-110 transition-transform">
-                        <UploadCloud size={20} />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-bold text-slate-700">Click to select PDF or Image</p>
-                        <p className="text-xs text-slate-400">Verified certificate for Semester {manualData.semester} only</p>
-                      </div>
-                      <input type="file" className="hidden" />
-                    </label>
-                  </div>
-                )}
               </div>
 
-              <div className="p-6 bg-white border border-slate-200 rounded-2xl mb-8 shadow-sm">
-                <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 uppercase tracking-wider">
-                  <UserPlus size={18} className="text-[#FF6900]"/> Student Details
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Full Name</label>
-                    <input type="text" name="studentName" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-medium" placeholder="Student Name" />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Enrollment Number</label>
-                    <input type="text" name="regNumber" required className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-medium" placeholder="REG-2024-00X" />
+              {/* DYNAMIC SEMESTER TABLE (Appears only when student is selected) */}
+              {selectedStudentId && (
+                <div className="p-6 bg-white border border-slate-200 rounded-2xl mb-8 shadow-sm animate-in fade-in zoom-in-95 duration-300">
+                  <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2 border-b border-slate-100 pb-3 uppercase tracking-wider">
+                    <Layers size={18} className="text-[#FF6900]"/> Semester Documents
+                  </h3>
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-slate-200">
+                          <th className="py-3 px-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">S.No</th>
+                          <th className="py-3 px-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Semester</th>
+                          <th className="py-3 px-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Upload Details</th>
+                          <th className="py-3 px-6 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => {
+                          const file = semesterFiles[sem];
+                          return (
+                            <tr key={sem} className="hover:bg-slate-50 transition-colors">
+                              <td className="py-3 px-6 text-sm font-bold text-slate-400">{sem}</td>
+                              <td className="py-3 px-6 text-sm font-bold text-slate-700">Semester {sem}</td>
+                              <td className="py-3 px-6">
+                                {file ? (
+                                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-lg w-fit">
+                                    <FileText size={14} /> {file.name}
+                                  </div>
+                                ) : (
+                                  <span className="text-xs text-slate-400 italic">No document selected</span>
+                                )}
+                              </td>
+                              <td className="py-3 px-6 text-right">
+                                <label className={`cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm border ${
+                                  file 
+                                  ? "bg-white border-orange-200 text-[#FF6900] hover:bg-orange-50" 
+                                  : "bg-[#FF6900] text-white hover:bg-[#e65f00] border-transparent"
+                                }`}>
+                                  <UploadCloud size={14} />
+                                  {file ? "Replace" : "Upload"}
+                                  <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    onChange={(e) => {
+                                      if (e.target.files[0]) {
+                                        setSemesterFiles(prev => ({ ...prev, [sem]: e.target.files[0] }));
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex justify-end">
                 <button type="submit" className="bg-[#FF6900] hover:bg-[#e65f00] text-white px-10 py-3 rounded-xl font-bold shadow-md active:scale-95 transition-all text-sm uppercase tracking-wider">
-                  Submit Degree Record
+                  Submit Documents
                 </button>
               </div>
             </form>
