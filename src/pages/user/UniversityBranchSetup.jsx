@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Plus, Search, Edit2, Trash2, Eye,
@@ -11,6 +11,7 @@ import {
 const UniversityBranchSetup = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const formRef = useRef(null); // Ref for reliable scrolling to form
 
   // --- DYNAMIC BREADCRUMBS ---
   const generateBreadcrumbs = () => {
@@ -55,8 +56,9 @@ const UniversityBranchSetup = () => {
     { id: 'C08', name: 'Diploma in Engineering' },
   ];
 
+  // Fixed the mock data mismatch here (e.g. IT -> Information Technology)
   const masterBranchesRegistry = {
-    'C01': ['Computer Science', 'Civil Engineering', 'Mechanical', 'IT', 'Electrical', 'Mining', 'Electronics'],
+    'C01': ['Computer Science', 'Civil Engineering', 'Mechanical', 'Information Technology', 'Electrical', 'Mining', 'Electronics'],
     'C02': ['Finance', 'Marketing', 'HR', 'Business Analytics', 'Operations'],
     'C03': ['Physics', 'Maths', 'Chemistry', 'Biology', 'Biotechnology', 'Computer Science'],
     'C04': ['English', 'History', 'Political Science', 'Economics', 'Sociology'],
@@ -114,7 +116,7 @@ const UniversityBranchSetup = () => {
   }, []);
 
   // --- 3. HANDLERS ---
-  const handleCustomSelect = (type, value, id = null) => {
+  const handleCustomSelect = (type, value) => {
     if (type === 'academicYear') {
       setAcademicYear(value);
     } else if (type === 'courseId') {
@@ -173,17 +175,26 @@ const UniversityBranchSetup = () => {
     setTimeout(() => setShowSuccess(false), 4000);
   };
 
-  const handleEdit = (item) => {
+  const handleEdit = (item, e) => {
+    if (e) e.stopPropagation();
     setIsEditing(item.id);
     setSelectedCourseId(item.courseId);
     setAcademicYear(item.academicYear);
-    setFormRows(item.branches.map((b, i) => ({ id: i, branchName: b.name, branchCode: b.code })));
+    // Added a randomized increment to ensure IDs are strictly unique when mapping
+    setFormRows(item.branches.map((b, i) => ({ id: Date.now() + i, branchName: b.name, branchCode: b.code })));
     setOpenDropdown(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Reliably scroll to the form
+    if (formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
-  const handleDelete = (id) => {
-    setBranchesList(branchesList.filter(b => b.id !== id));
+  const handleDelete = (id, e) => {
+    if (e) e.stopPropagation();
+    setBranchesList(prev => prev.filter(b => b.id !== id));
     if (currentItems.length === 1 && currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
@@ -244,7 +255,7 @@ const UniversityBranchSetup = () => {
         </div>
       )}
 
-      {/* SUCCESS NOTIFICATION TOAST */}
+      {/* SUCCESS NOTIFICATION TOAST (Edunut UI - Orange) */}
       {showSuccess && (
         <div className="fixed top-6 right-6 z-[60] animate-in slide-in-from-top-4 fade-in duration-300">
           <div className="bg-white border-l-4 border-l-[#FF6900] shadow-xl rounded-[10px] p-4 max-w-md flex items-start gap-4">
@@ -253,7 +264,7 @@ const UniversityBranchSetup = () => {
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900">Configuration Saved</h3>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                 The branch setup has been successfully updated in your institutional registry.
               </p>
             </div>
@@ -287,7 +298,7 @@ const UniversityBranchSetup = () => {
       </div>
 
       {/* 2. SETUP FORM CARD (Edunut UI) */}
-      <div className="bg-white border border-slate-200 rounded-[10px] shadow-sm overflow-hidden w-full mb-10">
+      <div ref={formRef} className="bg-white border border-slate-200 rounded-[10px] shadow-sm overflow-hidden w-full mb-10 scroll-mt-24">
         <div className="bg-slate-50/50 border-b border-slate-100 p-5 px-6 flex items-center gap-2">
           <Layers size={18} className="text-slate-400" />
           <h2 className="text-xs font-bold text-slate-700 uppercase tracking-widest">
@@ -450,7 +461,7 @@ const UniversityBranchSetup = () => {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
           <input 
             type="text" 
-            placeholder="Search by course name..." 
+            placeholder="Search by course name or academic year..." 
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -515,19 +526,19 @@ const UniversityBranchSetup = () => {
                   {openDropdown === `action-${item.id}` && (
                     <div className="absolute right-8 top-10 w-36 bg-white border-none rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                       <button
-                        onClick={() => { setViewModalData(item); setOpenDropdown(null); }}
+                        onClick={(e) => { e.stopPropagation(); setViewModalData(item); setOpenDropdown(null); }}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] transition-colors border-b border-slate-50 text-left outline-none"
                       >
                         <Eye size={16} /> View
                       </button>
                       <button
-                        onClick={() => handleEdit(item)}
+                        onClick={(e) => handleEdit(item, e)}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] transition-colors border-b border-slate-50 text-left outline-none"
                       >
                         <Edit2 size={16} /> Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={(e) => handleDelete(item.id, e)}
                         className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors text-left outline-none"
                       >
                         <Trash2 size={16} /> Delete

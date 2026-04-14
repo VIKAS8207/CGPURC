@@ -3,7 +3,8 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, Briefcase,
-  LogOut, ChevronsLeft, Calendar, User, CalendarDays, UploadCloud, HandCoins
+  LogOut, ChevronsLeft, Calendar, User, CalendarDays, UploadCloud, HandCoins, 
+  GraduationCap
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -92,7 +93,23 @@ const UserLayout = () => {
             )}
           </div>
 
-          
+          {/* Student Data Link */}
+          <Link to="/user/uploads/student-data" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/student-data') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+          <Users size={20} className={isActive('/user/uploads/student-data') ? 'text-orange-600' : 'text-slate-400'} />
+          {isSidebarOpen && <span>Student Data</span>}
+          </Link>
+
+          {/* Degree Certificates Link */}
+          <Link to="/user/uploads/degree" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/degree') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+          <GraduationCap size={20} className={isActive('/user/uploads/degree') ? 'text-orange-600' : 'text-slate-400'} />
+          {isSidebarOpen && <span>Degree Certificates</span>}
+          </Link>
+
+          {/* Academic Calendar Link */}
+          <Link to="/user/uploads/academic-calendar" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads/academic-calendar') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+          <CalendarDays size={20} className={isActive('/user/uploads/academic-calendar') ? 'text-orange-600' : 'text-slate-400'} />
+          {isSidebarOpen && <span>Academic Calendar</span>}
+          </Link>
 
           <Link to="/user/uploads" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/uploads') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
             <UploadCloud size={20} className={isActive('/user/uploads') ? 'text-orange-600' : 'text-slate-400'} />

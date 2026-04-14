@@ -27,6 +27,7 @@ import UserPayFees from "./pages/user/UserPayFees";
 import UserPaymentHistory from "./pages/user/UserPaymentHistory";
 import UserProfile from "./pages/user/UserProfile";
 
+
 import FinancialConfig from "./pages/admin/master/FinancialConfig";
 import PenaltyMaster from "./pages/admin/master/PenaltyMaster";
 import DueDateConfig from "./pages/admin/master/DueDateConfig";
@@ -77,6 +78,7 @@ function App() {
             <Route path="/user/pay-fees" element={<UserPayFees />} />
             <Route path="/user/payment-history" element={<UserPaymentHistory />} />
             <Route path="/user-profile" element={<UserProfile />} />
+            
             {/* You can add more user pages here later like /my-courses, /grades */}
           </Route>
           

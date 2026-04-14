@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { 
   UploadCloud, Search, Filter, ChevronRight, 
   Users, GraduationCap, FileText, IdCard, Receipt, 
-  FileCheck, ArrowLeft, Calendar, Wallet
+  FileCheck, ArrowLeft, Calendar, Wallet, IndianRupee
 } from 'lucide-react';
 
 const UserUploads = () => {
@@ -13,33 +13,6 @@ const UserUploads = () => {
   // Professional data structure for the Upload Cards
   const uploadModules = [
     { 
-      title: "Student Data Upload", 
-      desc: "Bulk upload enrolled student lists via CSV/Excel", 
-      icon: Users, 
-      status: "Required",
-      color: "text-[#FF6900]", 
-      bg: "bg-[#FF6900]/10",
-      link: "/user/uploads/student-data"
-    },
-    { 
-      title: "Degree Certificates", 
-      desc: "Upload verified degree documents and certificates", 
-      icon: GraduationCap, 
-      status: "Pending",
-      color: "text-amber-600", 
-      bg: "bg-amber-50",
-      link: "/user/uploads/degree" 
-    },
-    { 
-      title: "Academic Calendar", 
-      desc: "Upload institutional holiday and term schedules", 
-      icon: Calendar, 
-      status: "Optional",
-      color: "text-rose-600", 
-      bg: "bg-rose-50",
-      link: "/user/uploads/academic-calendar"
-    },
-    { 
       title: "Course & Fee Structure", 
       desc: "Upload annual course lists and approved fee breakdown", 
       icon: Wallet, 
@@ -47,6 +20,15 @@ const UserUploads = () => {
       color: "text-blue-600", 
       bg: "bg-blue-50",
       link: "/user/uploads/course-fee" 
+    },
+    { 
+      title: "Upload Fee Data", 
+      desc: "Upload annual course lists and approved fee breakdown", 
+      icon: Wallet, 
+      status: "Required",
+      color: "text-blue-600", 
+      bg: "bg-blue-50",
+      link: "#" 
     }
   ];
 
