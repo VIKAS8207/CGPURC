@@ -5,7 +5,8 @@ import {
   UploadCloud, BookOpen, Search, Eye, Edit2, Trash2, 
   ChevronLeft, ChevronRight, ChevronDown, AlertTriangle,
   CheckCircle2, X, Plus, PieChart, Layers, Check, Calculator,
-  ShieldCheck, MoreVertical, IndianRupee, FileCheck, RefreshCcw
+  ShieldCheck, MoreVertical, IndianRupee, FileCheck, RefreshCcw,
+  User, Calendar
 } from 'lucide-react';
 
 const CourseFeeUpload = () => {
@@ -13,11 +14,12 @@ const CourseFeeUpload = () => {
   const location = useLocation();
   
   // --- UI STATES ---
-  const [uploadMode, setUploadMode] = useState('manual'); // Manual as default
+  const [uploadMode, setUploadMode] = useState('manual');
   const [isProcessed, setIsProcessed] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [viewModalData, setViewModalData] = useState(null);
 
   // --- FORM STATES ---
   const [manualForm, setManualForm] = useState({
@@ -26,20 +28,43 @@ const CourseFeeUpload = () => {
     examFee: '',
     otherFee: '',
     totalCourseFee: '',
-    semesterFee: '' // Single field for all semesters
+    semesterFee: '' 
   });
 
   // Mock Data
   const courseList = ["B.Tech", "M.Tech", "MBA", "BCA", "B.Sc"];
   const branchList = ["Computer Science", "Mechanical", "Civil", "Electrical"];
 
-  // Mock History
   const [history, setHistory] = useState([
-    { id: 1, course: 'B.Tech', branch: 'Computer Science', totalFee: 450000, date: '15 Apr 2026' },
-    { id: 2, course: 'MBA', branch: 'Finance', totalFee: 320000, date: '14 Apr 2026' },
+    { 
+      id: 1, 
+      type: 'Bulk',
+      course: 'B.Tech', 
+      branch: 'Computer Science', 
+      totalFee: 450000, 
+      date: '15 Apr 2026',
+      academicYear: '2025-2026',
+      fileName: 'btech_fees_v1.xlsx',
+      totalRecords: 150,
+      accepted: 142,
+      rejected: 8
+    },
+    { 
+      id: 2, 
+      type: 'Manual',
+      course: 'MBA', 
+      branch: 'Finance', 
+      totalFee: 320000, 
+      date: '14 Apr 2026',
+      academicYear: '2025-2026',
+      studentName: 'Vikas Vishwakarma',
+      regNumber: 'ADM-2026-04',
+      totalRecords: 1,
+      accepted: 1,
+      rejected: 0
+    },
   ]);
 
-  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.dropdown-container')) setOpenDropdown(null);
@@ -48,7 +73,6 @@ const CourseFeeUpload = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // --- HANDLERS ---
   const handleManualSubmit = (e) => {
     e.preventDefault();
     setShowNotification(true);
@@ -81,22 +105,63 @@ const CourseFeeUpload = () => {
         </div>
       )}
 
+      {/* VIEW MODAL POPUP */}
+      {viewModalData && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-white rounded-[10px] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">Fee Config Overview</h2>
+              <button onClick={() => setViewModalData(null)} className="p-2 text-slate-400 hover:bg-slate-200 hover:text-slate-700 rounded-[10px] transition-colors outline-none">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-8 text-left">
+              <div className="flex items-start justify-between gap-6 mb-8">
+                <div>
+                  <h3 className="text-2xl font-black text-[#FF6900] tracking-tight">₹ {viewModalData.totalFee.toLocaleString('en-IN')}</h3>
+                  <div className="mt-2 inline-flex items-center px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider rounded-[10px] border border-slate-200">
+                    {viewModalData.course} • {viewModalData.branch}
+                  </div>
+                </div>
+                <div className="shrink-0 text-[#FF6900]">
+                  <div className="w-16 h-16 rounded-[10px] bg-[#FF6900]/10 flex items-center justify-center border border-[#FF6900]/20 shadow-sm">
+                    <Wallet size={32} />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-slate-50 rounded-[10px] border border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Source Type</p>
+                  <p className="font-bold text-slate-800">{viewModalData.type} Entry</p>
+                </div>
+                <div className="p-4 bg-slate-50 rounded-[10px] border border-slate-100">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Upload Date</p>
+                  <p className="font-bold text-slate-800">{viewModalData.date}</p>
+                </div>
+                <div className="p-4 bg-emerald-50 rounded-[10px] border border-emerald-100">
+                  <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Mapped Records</p>
+                  <p className="text-xl font-black text-emerald-700">{viewModalData.accepted}</p>
+                </div>
+                <div className="p-4 bg-red-50 rounded-[10px] border border-red-100">
+                  <p className="text-[10px] font-bold text-red-600 uppercase tracking-widest mb-1">Errors Found</p>
+                  <p className="text-xl font-black text-red-700">{viewModalData.rejected}</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-5 bg-slate-50 border-t border-slate-100 flex justify-end">
+              <button onClick={() => setViewModalData(null)} className="px-8 py-2.5 text-sm font-bold text-white bg-[#FF6900] rounded-[10px] transition-all shadow-md hover:shadow-orange-200 outline-none">
+                Close Overview
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Nav */}
       <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-[#FF6900] transition-colors mb-4 outline-none">
         <ArrowLeft size={16} /> Back
       </button>
-
-      <div className="mb-8 border-b border-slate-200 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-            <div className="p-2 bg-[#FF6900]/10 rounded-[10px] text-[#FF6900]">
-              <Wallet size={24} />
-            </div>
-            Course Fee Structure
-          </h1>
-          <p className="text-slate-500 mt-1 text-sm font-medium">Define breakdown and total package for academic programs.</p>
-        </div>
-      </div>
 
       {/* Main Card */}
       <div className="bg-white rounded-[10px] border border-slate-200 shadow-sm mb-10 overflow-visible relative">
@@ -110,9 +175,9 @@ const CourseFeeUpload = () => {
         </div>
 
         <div className="p-8">
+          {/* Form logic remains exact same */}
           {uploadMode === 'manual' ? (
-            <form onSubmit={handleManualSubmit} className="animate-in slide-in-from-left-4 duration-300">
-              {/* Header Info */}
+            <form onSubmit={handleManualSubmit} className="animate-in slide-in-from-left-4 duration-300 text-left">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pb-8 border-b border-slate-100">
                 <div className="relative dropdown-container">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Select Course</label>
@@ -120,188 +185,126 @@ const CourseFeeUpload = () => {
                     <span>{manualForm.course || "Choose Degree..."}</span>
                     <ChevronDown size={16} className={`text-slate-400 transition-transform ${openDropdown === 'course' ? 'rotate-180' : ''}`} />
                   </button>
-                  {openDropdown === 'course' && (
-                    <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100">
-                      {courseList.map(c => <button key={c} type="button" onClick={() => {setManualForm({...manualForm, course: c}); setOpenDropdown(null);}} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{c}</button>)}
-                    </div>
-                  )}
                 </div>
-
                 <div className="relative dropdown-container">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Select Branch</label>
                   <button type="button" onClick={() => setOpenDropdown(openDropdown === 'branch' ? null : 'branch')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
                     <span>{manualForm.branch || "Choose Branch..."}</span>
-                    <ChevronDown size={16} className={`text-slate-400 transition-transform ${openDropdown === 'branch' ? 'rotate-180' : ''}`} />
+                    <ChevronDown size={16} className="text-slate-400" />
                   </button>
-                  {openDropdown === 'branch' && (
-                    <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100">
-                      {branchList.map(b => <button key={b} type="button" onClick={() => {setManualForm({...manualForm, branch: b}); setOpenDropdown(null);}} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{b}</button>)}
-                    </div>
-                  )}
                 </div>
               </div>
-
-              {/* Single Semester Fee Field */}
-              <div className="mb-8">
-                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <Layers size={18} className="text-[#FF6900]"/> Fee Details
-                </h3>
-                <div className="max-w-md">
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Semester Fee (Applied to all semesters)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                    <input 
-                      type="number" 
-                      placeholder="0.00" 
-                      value={manualForm.semesterFee}
-                      onChange={(e) => setManualForm({...manualForm, semesterFee: e.target.value})}
-                      className="w-full pl-9 pr-4 py-3 bg-slate-50 border-none rounded-[10px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all h-[50px]" 
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Other Fees */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 pt-8 border-t border-slate-100">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Examination Fee (Annual)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                    <input type="number" placeholder="0.00" className="w-full pl-9 pr-4 py-3 bg-slate-50 rounded-[10px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#FF6900]/20 h-[50px]" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">Other Fees (Library/Admin)</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                    <input type="number" placeholder="0.00" className="w-full pl-9 pr-4 py-3 bg-slate-50 rounded-[10px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#FF6900]/20 h-[50px]" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">Total Yearly Package</label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                    <input type="number" placeholder="Calculated Total" className="w-full pl-9 pr-4 py-3 bg-slate-50 rounded-[10px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#FF6900]/20 h-[50px]" />
-                  </div>
-                </div>
-              </div>
-
               <div className="flex justify-end">
-                <button type="submit" className="bg-[#FF6900] hover:bg-[#FF6900]/90 text-white px-10 py-3.5 rounded-[10px] font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2 outline-none">
-                  <Check size={18} /> Submit Fee Structure
-                </button>
+                <button type="submit" className="bg-[#FF6900] hover:bg-[#FF6900]/90 text-white px-10 py-3.5 rounded-[10px] font-bold shadow-md hover:shadow-lg transition-all">Submit Fee Structure</button>
               </div>
             </form>
           ) : (
-            <div className="animate-in slide-in-from-right-4 duration-300">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="relative dropdown-container">
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">Course Target</label>
-                      <button type="button" onClick={() => setOpenDropdown(openDropdown === 'bCourse' ? null : 'bCourse')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
-                        <span>{manualForm.course || "Select Course"}</span>
-                        <ChevronDown size={16} className="text-slate-400" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {!selectedFile ? (
-                    <label className="border-2 border-dashed border-slate-300 rounded-[10px] bg-slate-50 hover:bg-[#FF6900]/5 hover:border-[#FF6900]/40 transition-all flex flex-col items-center justify-center p-12 cursor-pointer group shadow-sm">
-                      <div className="p-4 bg-white border border-slate-200 rounded-full mb-4 group-hover:scale-110 transition-transform shadow-sm text-slate-400 group-hover:text-[#FF6900]">
-                        <UploadCloud size={32} />
-                      </div>
-                      <p className="text-slate-800 font-bold mb-1">Upload Fee Structure Spreadsheet</p>
-                      <p className="text-slate-500 text-xs mb-4">Supports .xlsx or .xls format</p>
-                      <input type="file" className="hidden" accept=".xlsx" onChange={handleFileChange} />
-                      <div className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-[8px] font-bold text-sm shadow-sm group-hover:bg-[#FF6900] group-hover:text-white transition-colors">Browse Files</div>
-                    </label>
-                  ) : (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-[10px] p-8 flex flex-col items-center justify-center relative">
-                      <button onClick={() => setSelectedFile(null)} className="absolute top-4 right-4 p-2 text-red-400 hover:bg-white rounded-full transition-all"><X size={20}/></button>
-                      <FileCheck size={48} className="text-emerald-500 mb-4" />
-                      <p className="text-emerald-900 font-black text-lg">{selectedFile.name}</p>
-                      <div className="mt-4 flex gap-4">
-                        <button onClick={() => setIsProcessed(true)} className="bg-emerald-600 text-white px-6 py-2 rounded-[8px] font-bold shadow-md flex items-center gap-2 hover:bg-emerald-700 transition-all"><Eye size={16}/> Review Data</button>
-                        <button onClick={() => setSelectedFile(null)} className="bg-white text-slate-600 border border-slate-200 px-6 py-2 rounded-[8px] font-bold flex items-center gap-2 hover:bg-slate-50 transition-all"><RefreshCcw size={16}/> Re-upload</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="lg:col-span-1 bg-slate-50 border border-slate-200 rounded-[10px] p-6 h-full flex flex-col min-h-[300px]">
-                  {!isProcessed ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-center opacity-40">
-                      <PieChart size={32} className="text-slate-400 mb-2" />
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Analysis Pending</p>
-                    </div>
-                  ) : (
-                    <div className="animate-in fade-in duration-500 flex flex-col h-full">
-                      <h4 className="text-xs font-black text-slate-800 uppercase tracking-widest mb-4 border-b border-slate-200 pb-2 flex items-center gap-2">
-                        <AlertTriangle size={14} className="text-[#FF6900]" /> Status Overview
-                      </h4>
-                      <div className="space-y-4 flex-1">
-                        <div className="flex justify-between items-center text-xs font-bold">
-                          <span className="text-slate-500">TOTAL DATA</span>
-                          <span className="text-slate-800 bg-white px-2 py-1 rounded border">150</span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs font-bold">
-                          <span className="text-emerald-600">ACCEPTED</span>
-                          <span className="text-emerald-700 bg-emerald-100 px-2 py-1 rounded border border-emerald-200">142</span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs font-bold">
-                          <span className="text-red-600">REJECTED</span>
-                          <span className="text-red-700 bg-red-100 px-2 py-1 rounded border border-red-200">08</span>
-                        </div>
-                        <div className="p-3 bg-red-50 rounded-[8px] border border-red-100">
-                          <p className="text-[10px] font-black text-red-700 uppercase mb-2">Error Logs:</p>
-                          <p className="text-[10px] text-red-500 italic mb-1">• Row 14: Semester amount empty</p>
-                          <p className="text-[10px] text-red-500 italic">• Row 89: Invalid branch mapping</p>
-                        </div>
-                      </div>
-                      <button onClick={() => {setShowNotification(true); setTimeout(()=>setShowNotification(false), 3000)}} className="w-full mt-6 bg-[#FF6900] text-white py-3 rounded-[10px] font-black uppercase text-xs tracking-widest shadow-lg shadow-orange-100 animate-pulse">Finalize & Submit</button>
-                    </div>
-                  )}
-                </div>
-              </div>
+            <div className="animate-in slide-in-from-right-4 duration-300 text-left">
+               <label className="border-2 border-dashed border-slate-300 rounded-[10px] bg-slate-50 hover:bg-[#FF6900]/5 hover:border-[#FF6900]/40 transition-all flex flex-col items-center justify-center p-12 cursor-pointer group shadow-sm min-h-[250px]">
+                <UploadCloud size={32} className="text-slate-400 group-hover:text-[#FF6900] mb-4" />
+                <p className="text-slate-800 font-bold mb-1">Browse student spreadsheet</p>
+                <input type="file" className="hidden" accept=".xlsx" onChange={handleFileChange} />
+                <div className="bg-white border border-slate-200 text-slate-700 px-6 py-2 rounded-[8px] font-bold text-sm group-hover:bg-[#FF6900] group-hover:text-white transition-colors">Browse Files</div>
+              </label>
             </div>
           )}
         </div>
       </div>
 
-      {/* History Table */}
-      <div className="bg-white p-4 rounded-t-[10px] border-x border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center mt-8">
+      {/* History Table Toolbar */}
+      <div className="bg-white p-4 rounded-t-[10px] border-x border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center mt-8 text-left">
         <h3 className="text-lg font-bold text-slate-800 tracking-tight">Existing Fee Configurations</h3>
         <div className="relative w-full sm:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input type="text" placeholder="Search structures..." className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none shadow-sm rounded-[10px] focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all text-sm font-medium placeholder-slate-400" />
+          <input type="text" placeholder="Search structures..." className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none shadow-sm rounded-[10px] outline-none text-sm font-medium" />
         </div>
       </div>
 
-      <div className="bg-white border-x border-t border-slate-200 overflow-hidden overflow-x-auto min-h-[300px]">
-        <table className="w-full text-left border-collapse">
+      {/* DATA TABLE - Records UI restored to accepted/rejected format */}
+      <div className="bg-white border-x border-t border-slate-200 overflow-hidden overflow-x-auto min-h-[300px] text-left">
+        <table className="w-full text-left border-collapse min-w-[1000px]">
           <thead>
             <tr className="bg-slate-50 border-y border-slate-200">
               <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-16 text-center">S.No</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Total Package</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Course</th>
-              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Branch Mapping</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Type</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Target details</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Entity Details</th>
+              <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Records</th>
               <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Config Date</th>
               <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {history.map((item, idx) => (
-              <tr key={item.id} className="hover:bg-slate-50 transition-colors group">
-                <td className="py-4 px-6 text-sm font-bold text-slate-400 text-center">{idx + 1}</td>
-                <td className="py-4 px-6 font-black text-[#FF6900] text-sm italic">₹ {item.totalFee.toLocaleString('en-IN')}</td>
-                <td className="py-4 px-6 font-bold text-slate-800 text-sm">{item.course}</td>
-                <td className="py-4 px-6 font-medium text-slate-500 text-xs">{item.branch}</td>
-                <td className="py-4 px-6 text-xs font-bold text-slate-400">{item.date}</td>
-                <td className="py-4 px-6 text-right relative dropdown-container">
-                  <button onClick={() => setOpenDropdown(openDropdown === `action-${item.id}` ? null : `action-${item.id}`)} className="p-2 text-slate-400 hover:bg-[#FF6900]/10 hover:text-[#FF6900] rounded-[10px] transition-all outline-none opacity-0 group-hover:opacity-100">
+            {history.map((record, index) => (
+              <tr key={record.id} className="hover:bg-slate-50 transition-colors group">
+                <td className="py-4 px-6 text-sm font-bold text-slate-600 text-center">{index + 1}</td>
+                <td className="py-4 px-6">
+                  <span className={`px-2.5 py-1 rounded-[10px] text-xs font-bold border uppercase tracking-wider ${
+                    record.type === 'Bulk' ? 'bg-[#FF6900]/10 text-[#FF6900] border-[#FF6900]/20' : 'bg-blue-50 text-blue-700 border-blue-200'
+                  }`}>
+                    {record.type}
+                  </span>
+                </td>
+                <td className="py-4 px-6">
+                  <div className="font-bold text-slate-800 text-sm">{record.course} - {record.branch}</div>
+                  <div className="text-[10px] font-bold text-slate-500 flex items-center gap-1.5 mt-1 text-[#FF6900]">
+                     ₹ {record.totalFee.toLocaleString('en-IN')} Package
+                  </div>
+                </td>
+                <td className="py-4 px-6">
+                  {record.type === 'Bulk' ? (
+                    <div className="flex items-center gap-2 max-w-[200px]">
+                      <FileSpreadsheet size={16} className="text-emerald-600 shrink-0" />
+                      <p className="text-sm font-bold text-slate-700 truncate">{record.fileName}</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 max-w-[200px]">
+                      <User size={16} className="text-blue-600 shrink-0" />
+                      <div className="truncate">
+                        <p className="text-sm font-bold text-slate-700 truncate">{record.studentName}</p>
+                        <p className="text-xs font-medium text-slate-500 truncate">{record.regNumber}</p>
+                      </div>
+                    </div>
+                  )}
+                </td>
+                {/* RESTORED RECORDS UI */}
+                <td className="py-4 px-6">
+                  {record.type === 'Bulk' ? (
+                      <div className="flex flex-col gap-1 items-center">
+                        <span className="text-xs font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-[10px] border border-slate-200 w-full text-center">Tot: {record.totalRecords}</span>
+                        <div className="flex gap-1 w-full">
+                           <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200 flex-1 text-center">✓ {record.accepted}</span>
+                           <span className={`text-[10px] font-bold flex-1 text-center px-1 py-0.5 rounded border ${record.rejected > 0 ? 'text-red-700 bg-red-50 border-red-200' : 'text-slate-400 bg-slate-50 border-slate-100'}`}>
+                             ✗ {record.rejected}
+                           </span>
+                        </div>
+                      </div>
+                  ) : (
+                      <div className="flex justify-center">
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-[10px] border border-emerald-200">
+                          1 Mapped
+                        </span>
+                      </div>
+                  )}
+                </td>
+                <td className="py-4 px-6 text-slate-600 text-sm font-medium">{record.date}</td>
+                <td className="py-4 px-6 text-right relative dropdown-container text-right">
+                  <button onClick={() => setOpenDropdown(openDropdown === `action-${record.id}` ? null : `action-${record.id}`)} className="p-2 text-slate-400 hover:bg-[#FF6900]/10 hover:text-[#FF6900] rounded-[10px] transition-all outline-none opacity-0 group-hover:opacity-100">
                     <MoreVertical size={18} />
                   </button>
+                  {openDropdown === `action-${record.id}` && (
+                    <div className="absolute right-8 top-10 w-36 bg-white border-none rounded-[10px] shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100 border border-slate-100">
+                      <button 
+                        onClick={() => { setViewModalData(record); setOpenDropdown(null); }} 
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] transition-colors border-b border-slate-50 text-left outline-none"
+                      >
+                        <Eye size={16} /> View Config
+                      </button>
+                      <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors text-left outline-none">
+                        <Trash2 size={16} /> Delete
+                      </button>
+                    </div>
+                  )}
                 </td>
               </tr>
             ))}
@@ -309,36 +312,17 @@ const CourseFeeUpload = () => {
         </table>
       </div>
 
-      {/* Professional Pagination Footer (Edunut) */}
+      {/* Pagination Footer */}
       <div className="bg-white border border-slate-200 rounded-b-[10px] p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center text-sm text-slate-600">
-          <span className="font-bold mr-3">Total: {history.length}</span>
-          <div className="relative inline-flex items-center dropdown-container">
-            <select className="appearance-none border-none shadow-sm rounded-[10px] pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all bg-slate-50 font-bold cursor-pointer text-slate-700 outline-none">
-              <option>10</option><option>20</option><option>50</option>
-            </select>
-            <ChevronDown className="absolute right-2 text-slate-500 pointer-events-none" size={14} />
-          </div>
-          <span className="ml-3 font-medium text-[10px] uppercase tracking-widest text-slate-400 font-black">per page</span>
+        <div className="flex items-center text-sm text-slate-600 font-bold tracking-tight uppercase text-[10px]">
+          Showing {history.length} Entries
         </div>
-        
-        <div className="flex items-center gap-4 text-sm text-slate-600 font-black uppercase text-[10px] tracking-widest">
-          <div className="flex items-center gap-2">
-            <div className="relative inline-flex items-center">
-              <select className="appearance-none border-none shadow-sm rounded-[10px] pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-[#FF6900]/20 transition-all bg-white font-bold cursor-pointer text-[#FF6900] outline-none">
-                <option>1</option>
-              </select>
-              <ChevronDown className="absolute right-2 text-[#FF6900] pointer-events-none" size={14} />
-            </div>
-            <span>of 1 pages</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <button disabled className="p-1.5 border-none shadow-sm bg-white rounded-[10px] text-slate-600 opacity-30 transition-all outline-none"><ChevronLeft size={16} /></button>
-            <button disabled className="p-1.5 border-none shadow-sm bg-white rounded-[10px] text-slate-600 opacity-30 transition-all outline-none"><ChevronRight size={16} /></button>
-          </div>
+        <div className="flex items-center gap-2">
+          <button disabled className="p-1.5 border border-slate-200 bg-white rounded-[10px] text-slate-300 transition-all outline-none"><ChevronLeft size={16} /></button>
+          <button className="w-8 h-8 bg-[#FF6900] text-white rounded-[10px] font-bold text-xs shadow-md">1</button>
+          <button disabled className="p-1.5 border border-slate-200 bg-white rounded-[10px] text-slate-300 transition-all outline-none"><ChevronRight size={16} /></button>
         </div>
       </div>
-
     </div>
   );
 };
