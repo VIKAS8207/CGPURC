@@ -24,10 +24,10 @@ const UserUploads = () => {
     { 
       title: "Upload Fee Data", 
       desc: "Upload annual course lists and approved fee breakdown", 
-      icon: Wallet, 
+      icon: IndianRupee, 
       status: "Required",
-      color: "text-blue-600", 
-      bg: "bg-blue-50",
+      color: "text-green-600", 
+      bg: "bg-green-50",
       link: "/upload-fees" 
     }
   ];

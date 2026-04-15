@@ -18,7 +18,8 @@ import {
   Briefcase,
   HandCoins,
   FileText,
-  Search
+  Search,
+  TrendingUp
 } from 'lucide-react';
 
 const UserLayout = () => {
@@ -150,7 +151,7 @@ const UserLayout = () => {
           </Link>
 
           <Link to="/user/student-promotion" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/user/student-promotion') ? 'bg-orange-50 text-orange-700 font-semibold hover:bg-orange-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
-            <Briefcase size={20} className={isActive('/user/student-promotion') ? 'text-orange-600' : 'text-slate-400'} />
+            <TrendingUp size={20} className={isActive('/user/student-promotion') ? 'text-orange-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>StudentPromotion</span>}
           </Link>
 
