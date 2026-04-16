@@ -220,8 +220,8 @@ const UserLayout = () => {
             {isSidebarOpen && isReportsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1 animate-in slide-in-from-top-2 duration-200">
                 <Link 
-                  to="/reports/courses-branches" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/reports/courses-branches') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                  to="/reports/course-details" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/course-details') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
                 >
                   Courses & Branches
                 </Link>
@@ -232,14 +232,14 @@ const UserLayout = () => {
                   Student List
                 </Link>
                 <Link 
-                  to="/reports/bearer-list" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/reports/bearer-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                  to="/reports/office-bearers-list" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/office-bearers-list') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
                 >
                   Bearer List
                 </Link>
                 <Link 
-                  to="/reports/fees-report" 
-                  className={`block py-2 text-sm transition-colors ${isActive('/reports/fees-report') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
+                  to="/reports/student-fees-details" 
+                  className={`block py-2 text-sm transition-colors ${isActive('/reports/student-fees-details') ? 'text-orange-600 font-semibold' : 'text-slate-500 hover:text-orange-600'}`}
                 >
                   Fees Report
                 </Link>

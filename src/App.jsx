@@ -39,6 +39,15 @@ import DueDateConfig from "./pages/admin/master/DueDateConfig";
 import DashboardLayout from "./components/DashboardLayout"; // Admin Blue Theme
 import UserLayout from "./components/UserLayout";           // User Orange Theme
 
+import StudentReport from './pages/report/StudentReport';
+import StudentEnrolledReport from './pages/report/StudentEnrolledReport';
+import UniversityFeesReport from './pages/report/UniversityFeesReport';
+import PendingFeesReport from './pages/report/PendingFeesReport';
+import UniversityCourseReport from './pages/report/UniversityCourseReport';
+import CourseDetailsReport from './pages/report/CourseDetailsReport';
+import StudentListReport from './pages/report/StudentListReport';
+import OfficeBearerReport from './pages/report/OfficeBearerReport';
+import StudentFeesDetailsReport from './pages/report/StudentFeesDetailsReport';
 
 
 function App() {
@@ -50,6 +59,16 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          <Route path="/reports/student-report" element={<StudentReport />} />
+          <Route path="/reports/students-enrolled" element={<StudentEnrolledReport />} />
+          <Route path="/reports/university-fees" element={<UniversityFeesReport />} />
+          <Route path="/reports/pending-fees" element={<PendingFeesReport />} />
+          <Route path="/reports/university-courses" element={<UniversityCourseReport />} />
+          <Route path="/reports/course-details" element={<CourseDetailsReport />} />
+          <Route path="/reports/student-list" element={<StudentListReport />} />
+          <Route path="/reports/office-bearers-list" element={<OfficeBearerReport />} />
+          <Route path="/reports/student-fees-details" element={<StudentFeesDetailsReport />} />
           
           {/* Admin Routes (Wrapped in Blue Layout) */}
           <Route element={<DashboardLayout />}>

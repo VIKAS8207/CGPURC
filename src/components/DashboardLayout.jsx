@@ -37,6 +37,7 @@ const DashboardLayout = () => {
     { label: "2026 — 2027", value: "2026-27" }
   ];
 
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
       
@@ -157,11 +158,11 @@ const DashboardLayout = () => {
             
             {isSidebarOpen && isReportsOpen && (
               <div className="pl-11 pr-3 py-2 space-y-1">
-                <Link to="/admin/reports/students" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Report</Link>
-                <Link to="/admin/reports/students-enrolled" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/students-enrolled') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Enrolled Report</Link>
-                <Link to="/admin/reports/university-fees" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University 1% Fees Report</Link>
-                <Link to="/admin/reports/pending-fees" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/pending-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Pending Fees Files</Link>
-                <Link to="/admin/reports/university-courses" className={`block py-2 text-sm transition-colors ${isActive('/admin/reports/university-courses') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University Wise Course Report</Link>
+                <Link to="/reports/student-report" target="_blank" className={`block py-2 text-sm transition-colors ${isActive('/reports/student-report') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Report</Link>
+                <Link to="/reports/students-enrolled" className={`block py-2 text-sm transition-colors ${isActive('/reports/students-enrolled') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Students Enrolled Report</Link>
+                <Link to="/reports/university-fees" className={`block py-2 text-sm transition-colors ${isActive('/reports/university-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University 1% Fees Report</Link>
+                <Link to="/reports/pending-fees" className={`block py-2 text-sm transition-colors ${isActive('/reports/pending-fees') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>Pending Fees Files</Link>
+                <Link to="/reports/university-courses" className={`block py-2 text-sm transition-colors ${isActive('/reports/university-courses') ? 'text-blue-700 font-semibold' : 'text-slate-500 hover:text-blue-600'}`}>University Wise Course Report</Link>
               </div>
             )}
           </div>
