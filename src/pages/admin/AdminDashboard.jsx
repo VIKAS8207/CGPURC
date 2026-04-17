@@ -13,17 +13,17 @@ const AdminDashboard = () => {
 
   // Updated Mock data with Blue/Emerald palette
   const stats = [
-    { title: 'Total Students', value: '1,284', change: '+12%', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { title: 'Fee Collection', value: '₹ 12.5L', change: '+8.2%', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { title: 'Total Students', value: '1.2M', change: '+12%', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { title: 'Payment Dues', value: '₹ 45.5L', change: 'From Univs.', icon: IndianRupee, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { title: 'System Uptime', value: '99.9%', change: 'Optimal', icon: Activity, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Active Courses', value: '14', change: '4 Branches', icon: GraduationCap, color: 'text-cyan-600', bg: 'bg-cyan-50' },
+    { title: 'Total Universities', value: '17', change: 'All Active', icon: Landmark, color: 'text-cyan-600', bg: 'bg-cyan-50' },
   ];
 
   const quickActions = [
-    { name: 'Upload Fees', icon: Wallet, path: '/upload-fees', desc: 'Process institutional revenue' },
-    { name: 'Promote Batch', icon: UserCheck, path: '/user/student-promotion', desc: 'Manage semester transitions' },
-    { name: 'Student Data', icon: UserPlus, path: '/user/uploads/student-data', desc: 'Bulk enrollment sync' },
-    { name: 'Academic Setup', icon: Settings, path: '/admin/master/course-master', desc: 'Configure Master masters' },
+    { name: 'Academic Year Master', icon: CalendarDays, path: '/academic-year', desc: 'Configure active sessions' },
+    { name: 'Due Date Master', icon: History, path: '/due-dates', desc: 'Manage institutional deadlines' },
+    { name: 'Verify Certificate', icon: ShieldCheck, path: '/verify-certificate', desc: 'Validate student credentials' },
+    { name: 'Add University', icon: Plus, path: '/add-university', desc: 'Register new institutions' },
   ];
 
   return (
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
       {/* 1. ADMIN PREMIUM HEADER */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Institutional Dashboard</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">University Regulatory Dashboard</h1>
           <p className="text-slate-500 font-medium mt-1">Central Command Center • <span className="text-blue-600">Admin Mode</span></p>
         </div>
         <div className="flex items-center gap-3">
@@ -104,9 +104,9 @@ const AdminDashboard = () => {
                 </div>
                 <div className="divide-y divide-slate-50">
                     {[
-                        { user: 'Registrar Office', action: 'University ID Mapped', time: '12 mins ago', icon: ShieldCheck, color: 'text-blue-500' },
-                        { user: 'Financial Head', action: 'Fee Structure Updated', time: '1 hr ago', icon: IndianRupee, color: 'text-emerald-500' },
-                        { user: 'System Bot', action: 'Automated Backup Success', time: '3 hrs ago', icon: Settings, color: 'text-slate-500' },
+                        { user: 'System Admin', action: 'Course Master Updated', time: '12 mins ago', icon: FileText, color: 'text-blue-500' },
+                        { user: 'Registrar Desk', action: 'Office Bearer Assigned', time: '1 hr ago', icon: Users, color: 'text-emerald-500' },
+                        { user: 'Super Admin', action: 'New University Added', time: '3 hrs ago', icon: Landmark, color: 'text-slate-500' },
                     ].map((item, idx) => (
                         <div key={idx} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                             <div className="flex items-center gap-4">
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
                     <div className="space-y-4">
                         <div className="flex items-center justify-between text-sm border-b border-white/5 pb-3">
                             <span className="font-medium opacity-60">Registered Univ.</span>
-                            <span className="font-bold">08 Active</span>
+                            <span className="font-bold">17 Active</span>
                         </div>
                         <div className="flex items-center justify-between text-sm border-b border-white/5 pb-3">
                             <span className="font-medium opacity-60">Master Sessions</span>
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
                     <h4 className="font-black text-slate-800 uppercase text-xs tracking-widest">Analytics Pulse</h4>
                 </div>
                 <div className="space-y-3">
-                    {['Enrollment Stats', 'Collection Summary', 'Audit Report'].map((report, i) => (
+                    {['Student Report', 'Pending Feed Files', 'University 1% Fees Report'].map((report, i) => (
                         <button key={i} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 group">
                             <span className="text-sm font-bold text-slate-600 group-hover:text-blue-700">{report}</span>
                             <ChevronRight size={14} className="text-slate-300 group-hover:text-blue-700" />

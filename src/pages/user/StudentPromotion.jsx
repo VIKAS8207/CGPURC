@@ -4,7 +4,7 @@ import {
   ArrowLeft, Users, ChevronRight, ChevronDown, Search, 
   CheckCircle2, XCircle, AlertTriangle, UserMinus, 
   UserCheck, Filter, MoreVertical, X, ShieldCheck,
-  Check, ChevronLeft, ArrowRight // <--- Ensure these are all here
+  Check, ChevronLeft, ArrowRight
 } from 'lucide-react';
 
 const StudentPromotion = () => {
@@ -51,6 +51,7 @@ const StudentPromotion = () => {
         name: `Student Name ${i + 1}`,
         regNo: `REG-2026-${1000 + i}`,
         isPromoted: true, 
+        isPromotedWithBacklog: false,
         status: 'Promoted'
       }));
       setStudents(mockStudents);
@@ -67,6 +68,7 @@ const StudentPromotion = () => {
     setStudents(students.map(s => ({ 
       ...s, 
       isPromoted: newState, 
+      isPromotedWithBacklog: false,
       status: newState ? 'Promoted' : 'Detained' 
     })));
   };
@@ -75,25 +77,51 @@ const StudentPromotion = () => {
     setStudents(students.map(s => {
       if (s.id === id) {
         const newIsPromoted = !s.isPromoted;
-        return { ...s, isPromoted: newIsPromoted, status: newIsPromoted ? 'Promoted' : 'Detained' };
+        return { 
+          ...s, 
+          isPromoted: newIsPromoted, 
+          isPromotedWithBacklog: false, // Mutually exclusive
+          status: newIsPromoted ? 'Promoted' : 'Detained' 
+        };
+      }
+      return s;
+    }));
+  };
+
+  const handleBacklogToggle = (id) => {
+    setStudents(students.map(s => {
+      if (s.id === id) {
+        const newIsBacklog = !s.isPromotedWithBacklog;
+        return { 
+          ...s, 
+          isPromotedWithBacklog: newIsBacklog, 
+          isPromoted: false, // Mutually exclusive
+          status: newIsBacklog ? 'Promoted with Backlog' : 'Detained' 
+        };
       }
       return s;
     }));
   };
 
   const handleStatusChange = (id, newStatus) => {
-    setStudents(students.map(s => s.id === id ? { ...s, status: newStatus } : s));
+    setStudents(students.map(s => s.id === id ? { 
+      ...s, 
+      status: newStatus, 
+      isPromoted: false, 
+      isPromotedWithBacklog: false 
+    } : s));
     setOpenDropdown(null);
   };
 
   const calculateOverview = () => {
     const promoted = students.filter(s => s.isPromoted).length;
-    const left = students.filter(s => !s.isPromoted && s.status === 'Left').length;
-    const detained = students.filter(s => !s.isPromoted && s.status === 'Detained').length;
-    return { promoted, left, detained };
+    const promotedWithBacklog = students.filter(s => s.isPromotedWithBacklog).length;
+    const left = students.filter(s => !s.isPromoted && !s.isPromotedWithBacklog && s.status === 'Left').length;
+    const detained = students.filter(s => !s.isPromoted && !s.isPromotedWithBacklog && s.status === 'Detained').length;
+    return { promoted, promotedWithBacklog, left, detained };
   };
 
-  const { promoted, left, detained } = calculateOverview();
+  const { promoted, promotedWithBacklog, left, detained } = calculateOverview();
 
   // Filter students based on search
   const filteredStudents = students.filter(s => 
@@ -208,8 +236,8 @@ const StudentPromotion = () => {
           
           {/* Data Overview & Promotion Details */}
           <div className="bg-white border border-slate-200 rounded-[10px] p-6 mb-6 shadow-sm">
-             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="flex items-center gap-6">
+             <div className="flex flex-col xl:flex-row items-center justify-between gap-6">
+                <div className="flex flex-wrap items-center gap-6 justify-center xl:justify-start">
                     <div className="flex items-center gap-3">
                         <div className="text-center">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Current</p>
@@ -222,13 +250,17 @@ const StudentPromotion = () => {
                         </div>
                     </div>
                     <div className="h-10 w-px bg-slate-200 hidden md:block"></div>
-                    <div className="flex gap-8">
+                    <div className="flex gap-6 sm:gap-8 flex-wrap justify-center">
                         <div className="text-center">
                             <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Promoted</p>
                             <p className="text-xl font-black text-emerald-700">{promoted}</p>
                         </div>
                         <div className="text-center">
-                            <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Detained</p>
+                            <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Promoted w/ Backlog</p>
+                            <p className="text-xl font-black text-blue-700">{promotedWithBacklog}</p>
+                        </div>
+                        <div className="text-center">
+                            <p className="text-[10px] font-bold text-amber-600 uppercase tracking-widest">Dropped</p>
                             <p className="text-xl font-black text-amber-700">{detained}</p>
                         </div>
                         <div className="text-center">
@@ -237,9 +269,9 @@ const StudentPromotion = () => {
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-3 w-full md:w-auto">
-                    <button onClick={() => setSelectedSem("")} className="flex-1 md:flex-none px-6 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-[10px] transition-all">Cancel</button>
-                    <button onClick={() => {setShowNotification(true); setTimeout(() => setShowNotification(false), 4000);}} className="flex-1 md:flex-none bg-[#FF6900] hover:bg-[#FF6900]/90 text-white px-8 py-3 rounded-[10px] font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 text-sm outline-none">
+                <div className="flex items-center gap-3 w-full xl:w-auto mt-4 xl:mt-0">
+                    <button onClick={() => setSelectedSem("")} className="flex-1 xl:flex-none px-6 py-3 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-[10px] transition-all">Cancel</button>
+                    <button onClick={() => {setShowNotification(true); setTimeout(() => setShowNotification(false), 4000);}} className="flex-1 xl:flex-none bg-[#FF6900] hover:bg-[#FF6900]/90 text-white px-8 py-3 rounded-[10px] font-bold shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2 text-sm outline-none">
                         <UserCheck size={18} /> Confirm Batch Promotion
                     </button>
                 </div>
@@ -271,20 +303,24 @@ const StudentPromotion = () => {
 
           {/* Student List Table */}
           <div className="bg-white border-x border-t border-slate-200 overflow-hidden overflow-x-auto min-h-[400px]">
-            <table className="w-full text-left border-collapse min-w-[800px]">
+            <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
                 <tr className="bg-slate-50 border-y border-slate-200">
                   <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-16 text-center">No</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-16 text-center">Promote</th>
+                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-20 text-center">Promote</th>
+                  {/* UPDATED WIDTH HERE: Changed from w-32 to w-48 and added whitespace-nowrap */}
+                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider w-48 whitespace-nowrap text-center">Promote w/ Backlog</th>
                   <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Student Profile</th>
                   <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Registration Number</th>
-                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Reason (If Detained/Left)</th>
+                  <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Reason (If Dropped/Left)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {currentItems.map((student, index) => (
-                  <tr key={student.id} className={`hover:bg-slate-50/50 transition-colors ${!student.isPromoted ? 'bg-slate-50/30' : ''}`}>
+                  <tr key={student.id} className={`hover:bg-slate-50/50 transition-colors ${(!student.isPromoted && !student.isPromotedWithBacklog) ? 'bg-slate-50/30' : ''}`}>
                     <td className="py-4 px-6 text-sm font-bold text-slate-400 text-center">{indexOfFirstItem + index + 1}</td>
+                    
+                    {/* Regular Promote Checkbox */}
                     <td className="py-4 px-6 text-center">
                       <label className="flex items-center justify-center cursor-pointer">
                         <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${student.isPromoted ? 'bg-[#FF6900] border-[#FF6900]' : 'border-slate-300 bg-white'}`}>
@@ -293,8 +329,19 @@ const StudentPromotion = () => {
                         <input type="checkbox" className="hidden" checked={student.isPromoted} onChange={() => handleIndividualToggle(student.id)} />
                       </label>
                     </td>
+
+                    {/* Promoted with Backlog Checkbox */}
+                    <td className="py-4 px-6 text-center">
+                      <label className="flex items-center justify-center cursor-pointer">
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${student.isPromotedWithBacklog ? 'bg-[#FF6900] border-[#FF6900]' : 'border-slate-300 bg-white'}`}>
+                          {student.isPromotedWithBacklog && <Check size={12} className="text-white" />}
+                        </div>
+                        <input type="checkbox" className="hidden" checked={student.isPromotedWithBacklog} onChange={() => handleBacklogToggle(student.id)} />
+                      </label>
+                    </td>
+
                     <td className="py-4 px-6">
-                      <span className={`text-sm font-bold transition-all ${!student.isPromoted ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                      <span className={`text-sm font-bold transition-all ${(!student.isPromoted && !student.isPromotedWithBacklog) ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
                         {student.name}
                       </span>
                     </td>
@@ -302,7 +349,7 @@ const StudentPromotion = () => {
                       <span className="text-xs font-bold text-slate-500 font-mono">{student.regNo}</span>
                     </td>
                     <td className="py-4 px-6 text-right relative dropdown-container">
-                      {!student.isPromoted ? (
+                      {(!student.isPromoted && !student.isPromotedWithBacklog) ? (
                         <div className="relative inline-block text-left">
                           <button 
                             onClick={() => setOpenDropdown(openDropdown === `status-${student.id}` ? null : `status-${student.id}`)}
@@ -313,13 +360,19 @@ const StudentPromotion = () => {
                           </button>
                           {openDropdown === `status-${student.id}` && (
                             <div className="absolute right-0 mt-2 w-36 bg-white rounded-[10px] shadow-xl z-[60] border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-                              <button onClick={() => handleStatusChange(student.id, 'Detained')} className="w-full text-left px-4 py-2.5 text-[10px] font-bold text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] uppercase tracking-wider transition-colors border-b border-slate-50">Detained</button>
+                              <button onClick={() => handleStatusChange(student.id, 'Detained')} className="w-full text-left px-4 py-2.5 text-[10px] font-bold text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] uppercase tracking-wider transition-colors border-b border-slate-50">Dropped</button>
                               <button onClick={() => handleStatusChange(student.id, 'Left')} className="w-full text-left px-4 py-2.5 text-[10px] font-bold text-slate-700 hover:bg-[#FF6900]/10 hover:text-[#FF6900] uppercase tracking-wider transition-colors">Left Course</button>
                             </div>
                           )}
                         </div>
+                      ) : student.isPromotedWithBacklog ? (
+                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-3 py-1.5 rounded-[10px] border border-blue-100">
+                          Promoted to {getNextSem(selectedSem)} with backlog
+                        </span>
                       ) : (
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-[10px] border border-emerald-100">Eligible for {getNextSem(selectedSem)}</span>
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-[10px] border border-emerald-100">
+                          Eligible for {getNextSem(selectedSem)}
+                        </span>
                       )}
                     </td>
                   </tr>

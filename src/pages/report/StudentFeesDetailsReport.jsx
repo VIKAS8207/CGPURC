@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Printer, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { ArrowLeft, Printer, ChevronLeft, ChevronRight, Download, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const feesData = [
@@ -16,8 +16,19 @@ const feesData = [
 ];
 
 const StudentFeesDetailsReport = () => {
-  // Calculate total dynamically
-  const totalFees = feesData.reduce((sum, item) => sum + item.amount, 0);
+  // --- FILTER STATE ---
+  const [selectedYear, setSelectedYear] = useState('All');
+
+  // Extract unique years for the dropdown
+  const availableYears = ['All', ...new Set(feesData.map(item => item.year))].sort();
+
+  // Filter data based on selected year
+  const filteredData = selectedYear === 'All' 
+    ? feesData 
+    : feesData.filter(item => item.year === parseInt(selectedYear));
+
+  // Calculate total dynamically based on filtered data
+  const totalFees = filteredData.reduce((sum, item) => sum + item.amount, 0);
 
   // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,12 +36,17 @@ const StudentFeesDetailsReport = () => {
   const [jumpPage, setJumpPage] = useState('');
 
   // --- CALCS ---
-  const totalPages = Math.ceil(feesData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = feesData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   // --- HANDLERS ---
+  const handleYearChange = (e) => {
+    setSelectedYear(e.target.value);
+    setCurrentPage(1); // Reset to page 1 when filter changes
+  };
+
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
@@ -74,6 +90,24 @@ const StudentFeesDetailsReport = () => {
           </div>
 
           <div className="flex items-center gap-3">
+            {/* PERFECTLY ALIGNED YEAR FILTER */}
+            <div className="relative">
+              <select
+                value={selectedYear}
+                onChange={handleYearChange}
+                className="appearance-none pl-4 pr-10 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 focus:outline-none transition-colors shadow-sm text-sm font-semibold cursor-pointer"
+              >
+                {availableYears.map(year => (
+                  <option key={year} value={year}>
+                    {year === 'All' ? 'All Years' : year}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <ChevronDown size={16} />
+              </div>
+            </div>
+
             <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-orange-600 transition-colors shadow-sm text-sm font-semibold whitespace-nowrap">
               <Download size={16} />
               Export CSV
@@ -109,6 +143,13 @@ const StudentFeesDetailsReport = () => {
                     <td className="py-4 px-6 text-sm font-medium text-slate-700 text-right">{row.amount}</td>
                   </tr>
                 ))}
+                {currentItems.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="py-8 text-center text-sm text-slate-500">
+                      No records found for the selected year.
+                    </td>
+                  </tr>
+                )}
               </tbody>
               {/* Sticky Footer for Totals */}
               <tfoot className="bg-orange-50/80 border-t-2 border-orange-200">
@@ -141,7 +182,7 @@ const StudentFeesDetailsReport = () => {
             </div>
 
             <div className="text-sm text-slate-500 font-medium text-center">
-              Showing <span className="font-semibold text-slate-700">{feesData.length === 0 ? 0 : indexOfFirstItem + 1}</span> to <span className="font-semibold text-slate-700">{Math.min(indexOfLastItem, feesData.length)}</span> of <span className="font-semibold text-slate-700">{feesData.length}</span> entries
+              Showing <span className="font-semibold text-slate-700">{filteredData.length === 0 ? 0 : indexOfFirstItem + 1}</span> to <span className="font-semibold text-slate-700">{Math.min(indexOfLastItem, filteredData.length)}</span> of <span className="font-semibold text-slate-700">{filteredData.length}</span> entries
             </div>
             
             <div className="flex items-center justify-between lg:justify-end gap-6">
@@ -150,11 +191,12 @@ const StudentFeesDetailsReport = () => {
                 <input 
                   type="number" 
                   min="1" 
-                  max={totalPages}
+                  max={totalPages || 1}
                   value={jumpPage}
                   onChange={(e) => setJumpPage(e.target.value)}
                   onKeyDown={handleJumpPage}
-                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300"
+                  disabled={totalPages === 0}
+                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300 disabled:opacity-50"
                   placeholder="Pg"
                 />
               </div>
@@ -162,21 +204,21 @@ const StudentFeesDetailsReport = () => {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={handlePrevPage}
-                  disabled={currentPage === 1}
+                  disabled={currentPage === 1 || totalPages === 0}
                   className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${
-                    currentPage === 1 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-orange-500 shadow-sm'
+                    currentPage === 1 || totalPages === 0 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-orange-500 shadow-sm'
                   }`}
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <span className="text-sm font-medium text-slate-600 min-w-[4rem] text-center whitespace-nowrap">
-                  <span className="font-bold text-slate-800">{currentPage}</span> / {totalPages}
+                  <span className="font-bold text-slate-800">{totalPages === 0 ? 0 : currentPage}</span> / {totalPages}
                 </span>
                 <button 
                   onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || totalPages === 0}
                   className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${
-                    currentPage === totalPages ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-orange-500 shadow-sm'
+                    currentPage === totalPages || totalPages === 0 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-orange-500 shadow-sm'
                   }`}
                 >
                   <ChevronRight size={18} />

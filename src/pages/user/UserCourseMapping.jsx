@@ -165,7 +165,7 @@ const UserCourseMapping = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Program Code</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Course ID</label>
               <input type="text" name="shortCode" value={formData.shortCode} onChange={handleInputChange} className="w-full px-4 py-3 bg-slate-50 rounded-[10px] outline-none shadow-sm font-medium" placeholder="e.g. BTECH-CS" required />
             </div>
 
