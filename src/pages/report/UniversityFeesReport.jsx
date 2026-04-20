@@ -23,10 +23,9 @@ const UniversityFeesReport = () => {
   // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [jumpPage, setJumpPage] = useState('');
 
   // --- CALCS ---
-  const totalPages = Math.ceil(feeData.length / itemsPerPage);
+  const totalPages = Math.ceil(feeData.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = feeData.slice(indexOfFirstItem, indexOfLastItem);
@@ -43,16 +42,6 @@ const UniversityFeesReport = () => {
   const handleRowsChange = (e) => {
     setItemsPerPage(Number(e.target.value));
     setCurrentPage(1);
-  };
-
-  const handleJumpPage = (e) => {
-    if (e.key === 'Enter') {
-      let page = parseInt(jumpPage);
-      if (page >= 1 && page <= totalPages) setCurrentPage(page);
-      else if (page > totalPages) setCurrentPage(totalPages);
-      else if (page < 1) setCurrentPage(1);
-      setJumpPage('');
-    }
   };
 
   return (
@@ -89,33 +78,33 @@ const UniversityFeesReport = () => {
           </div>
         </div>
 
-        {/* Table Container */}
+        {/* Table Container - Edunut UI Design */}
         <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-max">
               <thead>
-                <tr className="bg-[#fcf8e3] border-b border-[#f3ebbd]">
-                  <th className="py-4 px-4 text-sm font-semibold text-slate-700 whitespace-nowrap sticky left-0 z-10 bg-[#fcf8e3] border-r border-[#f3ebbd]">S.No.</th>
-                  <th className="py-4 px-4 text-sm font-semibold text-slate-700 whitespace-nowrap sticky left-[60px] z-10 bg-[#fcf8e3] border-r border-[#f3ebbd]">University Name</th>
+                <tr className="bg-blue-600 text-white print:bg-slate-100 print:text-black border-b border-blue-700">
+                  <th className="py-4 px-4 text-sm font-semibold whitespace-nowrap sticky left-0 z-10 bg-blue-600 print:bg-slate-100 border-r border-blue-500/50">S.No.</th>
+                  <th className="py-4 px-4 text-sm font-semibold whitespace-nowrap sticky left-[60px] z-10 bg-blue-600 print:bg-slate-100 border-r border-blue-500/50">University Name</th>
                   {monthColumns.map(month => (
-                    <th key={month} className="py-4 px-4 text-sm font-semibold text-slate-700 whitespace-nowrap text-right">
+                    <th key={month} className="py-4 px-4 text-sm font-semibold whitespace-nowrap text-right border-r border-blue-500/50">
                       {month.split('-')[0]}<br/>{month.split('-')[1]}
                     </th>
                   ))}
-                  <th className="py-4 px-6 text-sm font-semibold text-slate-700 whitespace-nowrap text-right border-l border-[#f3ebbd]">Total</th>
+                  <th className="py-4 px-6 text-sm font-semibold whitespace-nowrap text-right">Total</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {currentItems.map((row) => (
-                  <tr key={row.sno} className="hover:bg-slate-50/80 transition-colors group">
-                    <td className="py-4 px-4 text-sm font-medium text-slate-500 whitespace-nowrap sticky left-0 z-10 bg-white group-hover:bg-slate-50/80 border-r border-slate-100">{row.sno}</td>
-                    <td className="py-4 px-4 text-sm font-semibold text-slate-700 whitespace-nowrap sticky left-[60px] z-10 bg-white group-hover:bg-slate-50/80 border-r border-slate-100">{row.name}</td>
+                  <tr key={row.sno} className="hover:bg-blue-50/50 transition-colors group">
+                    <td className="py-4 px-4 text-sm font-medium text-slate-500 whitespace-nowrap sticky left-0 z-10 bg-white group-hover:bg-blue-50/50 transition-colors border-r border-slate-100">{row.sno}</td>
+                    <td className="py-4 px-4 text-sm font-semibold text-slate-700 whitespace-nowrap sticky left-[60px] z-10 bg-white group-hover:bg-blue-50/50 transition-colors border-r border-slate-100">{row.name}</td>
                     {monthColumns.map(month => (
-                      <td key={month} className="py-4 px-4 text-sm text-slate-600 whitespace-nowrap text-right">
+                      <td key={month} className="py-4 px-4 text-sm text-slate-600 whitespace-nowrap text-right border-r border-slate-100">
                         {row.months[month]}
                       </td>
                     ))}
-                    <td className="py-4 px-6 text-sm text-slate-700 font-bold whitespace-nowrap text-right border-l border-slate-100">{row.total}</td>
+                    <td className="py-4 px-6 text-sm text-slate-700 font-bold whitespace-nowrap text-right">{row.total}</td>
                   </tr>
                 ))}
               </tbody>
@@ -145,16 +134,28 @@ const UniversityFeesReport = () => {
             <div className="flex items-center justify-between lg:justify-end gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-500 font-medium hidden sm:inline-block whitespace-nowrap">Go to:</span>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max={totalPages}
-                  value={jumpPage}
-                  onChange={(e) => setJumpPage(e.target.value)}
-                  onKeyDown={handleJumpPage}
-                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300"
-                  placeholder="Pg"
-                />
+                
+                {/* Edunut UI Design Dropdown */}
+                <div className="relative flex items-center group">
+                  <select 
+                    value={currentPage}
+                    onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    className="w-[4.5rem] bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 pl-3 pr-7 outline-none shadow-sm transition-all font-semibold cursor-pointer hover:border-blue-300 hover:bg-blue-50/50 appearance-none"
+                  >
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <option key={page} value={page}>
+                        {page}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom aligned arrow icon */}
+                  <div className="absolute right-2.5 pointer-events-none text-slate-400 group-hover:text-blue-500 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+
               </div>
 
               <div className="flex items-center gap-2">

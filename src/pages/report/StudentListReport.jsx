@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import { ArrowLeft, Printer, ChevronLeft, ChevronRight, Filter, ListFilter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// Dummy data covering all 17 fields (UNCHANGED)
+// Dummy data covering all 17 fields
 const studentData = [
-  { sno: 1, enrollNum: "EN250001", studentId: "STU-101", name: "Rahul Sharma", fname: "Rajesh Sharma", gender: "Male", dob: "15-05-2004", aadhar: "1234 5678 9012", admissionDate: "01-07-2025", mobile: "9876543210", fmobile: "9988776655", email: "rahul@example.com", address: "123 Civil Lines, Raipur", course: "B.Tech", branch: "Computer Science", sem: "1st Sem", submittedBy: "Admin" },
-  { sno: 2, enrollNum: "EN250002", studentId: "STU-102", name: "Priya Verma", fname: "Suresh Verma", gender: "Female", dob: "22-08-2003", aadhar: "9876 5432 1098", admissionDate: "02-07-2025", mobile: "8765432109", fmobile: "8877665544", email: "priya@example.com", address: "45 MG Road, Bhilai", course: "MBA", branch: "Marketing", sem: "3rd Sem", submittedBy: "Admin" },
-  { sno: 3, enrollNum: "EN250003", studentId: "STU-103", name: "Amit Kumar", fname: "Ashok Kumar", gender: "Male", dob: "10-11-2002", aadhar: "4567 8901 2345", admissionDate: "05-07-2024", mobile: "7654321098", fmobile: "7766554433", email: "amit@example.com", address: "78 Sector 6, Durg", course: "B.Sc", branch: "Information Tech", sem: "5th Sem", submittedBy: "System" },
+  { sno: 1, enrollNum: "EN250001", studentId: "STU-101", name: "Rahul Sharma", fname: "Rajesh Sharma", gender: "Male", dob: "15-05-2004", aadhar: "[Aadhaar Redacted]", admissionDate: "01-07-2025", mobile: "9876543210", fmobile: "9988776655", email: "rahul@example.com", address: "123 Civil Lines, Raipur", course: "B.Tech", branch: "Computer Science", sem: "1st Sem", submittedBy: "Admin" },
+  { sno: 2, enrollNum: "EN250002", studentId: "STU-102", name: "Priya Verma", fname: "Suresh Verma", gender: "Female", dob: "22-08-2003", aadhar: "[Aadhaar Redacted]", admissionDate: "02-07-2025", mobile: "8765432109", fmobile: "8877665544", email: "priya@example.com", address: "45 MG Road, Bhilai", course: "MBA", branch: "Marketing", sem: "3rd Sem", submittedBy: "Admin" },
+  { sno: 3, enrollNum: "EN250003", studentId: "STU-103", name: "Amit Kumar", fname: "Ashok Kumar", gender: "Male", dob: "10-11-2002", aadhar: "[Aadhaar Redacted]", admissionDate: "05-07-2024", mobile: "7654321098", fmobile: "7766554433", email: "amit@example.com", address: "78 Sector 6, Durg", course: "B.Sc", branch: "Information Tech", sem: "5th Sem", submittedBy: "System" },
 ];
 
 const StudentListReport = () => {
   // --- STATES ---
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [jumpPage, setJumpPage] = useState('');
   
   // --- FILTER STATES ---
   const [filterCategory, setFilterCategory] = useState('Course'); // 'Course' or 'Year'
@@ -69,16 +68,6 @@ const StudentListReport = () => {
   const handleValueChange = (e) => {
     setFilterValue(e.target.value);
     setCurrentPage(1);
-  };
-
-  const handleJumpPage = (e) => {
-    if (e.key === 'Enter') {
-      let page = parseInt(jumpPage);
-      if (page >= 1 && page <= totalPages) setCurrentPage(page);
-      else if (page > totalPages) setCurrentPage(totalPages);
-      else if (page < 1) setCurrentPage(1);
-      setJumpPage('');
-    }
   };
 
   return (
@@ -151,7 +140,7 @@ const StudentListReport = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-max">
               <thead>
-                {/* Meta Info Row (Title Row Removed) */}
+                {/* Meta Info Row */}
                 <tr className="bg-slate-50/50">
                   <td colSpan="5" className="p-4 px-5 text-sm font-semibold text-slate-600 border-b border-slate-200 border-r border-slate-200 whitespace-nowrap">
                     Date: <span className="text-slate-800">16-04-2026</span> &nbsp;|&nbsp; Time: <span className="text-slate-800">10:36 AM</span>
@@ -161,31 +150,31 @@ const StudentListReport = () => {
                   </td>
                 </tr>
 
-                {/* --- COLUMN HEADERS --- */}
-                <tr className="bg-orange-500 text-white print:bg-slate-200 print:text-black"> 
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500 w-12 text-center">S.No.</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Enrollment<br/>Number</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Student<br/>ID</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Student<br/>Name</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Father<br/>Name</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Gender</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Date of<br/>Birth</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Aadhar<br/>Number</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Date of<br/>Admission</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Student Mobile<br/>Number</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Father's Mobile<br/>Number</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">E-Mail<br/>ID</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Permanent<br/>Address</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Course<br/>Name</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Course Branch<br/>Name</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide border-r border-orange-500">Persuing<br/>Year/Semester</th>
-                  <th className="py-4 px-3 text-xs font-semibold tracking-wide">Submitted<br/>By</th>
+                {/* --- COLUMN HEADERS (Mild Orange with Dark Orange Text) --- */}
+                <tr className="bg-orange-100 text-orange-900 print:bg-slate-200 print:text-black"> 
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80 w-12 text-center">S.No.</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Enrollment<br/>Number</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Student<br/>ID</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Student<br/>Name</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Father<br/>Name</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Gender</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Date of<br/>Birth</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Aadhar<br/>Number</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Date of<br/>Admission</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Student Mobile<br/>Number</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Father's Mobile<br/>Number</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">E-Mail<br/>ID</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Permanent<br/>Address</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Course<br/>Name</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Course Branch<br/>Name</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide border-r border-orange-200/80">Persuing<br/>Year/Semester</th>
+                  <th className="py-4 px-3 text-xs font-bold tracking-wide">Submitted<br/>By</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {currentItems.length > 0 ? (
                   currentItems.map((row, index) => (
-                    <tr key={row.sno} className="hover:bg-indigo-50/40 transition-colors group bg-white">
+                    <tr key={row.sno} className="hover:bg-orange-50/40 transition-colors group bg-white">
                       <td className="py-3 px-3 text-sm font-medium text-slate-500 text-center border-r border-slate-100">{indexOfFirstItem + index + 1}</td>
                       <td className="py-3 px-3 text-sm font-medium text-slate-700 border-r border-slate-100 whitespace-nowrap">{row.enrollNum}</td>
                       <td className="py-3 px-3 text-sm text-slate-600 border-r border-slate-100 whitespace-nowrap">{row.studentId}</td>
@@ -246,36 +235,52 @@ const StudentListReport = () => {
             <div className="flex items-center justify-between lg:justify-end gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-500 font-medium hidden sm:inline-block whitespace-nowrap">Go to:</span>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max={totalPages}
-                  value={jumpPage}
-                  onChange={(e) => setJumpPage(e.target.value)}
-                  onKeyDown={handleJumpPage}
-                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300"
-                  placeholder="Pg"
-                />
+                
+                {/* Edunut UI Design Dropdown (Orange Theme) */}
+                <div className="relative flex items-center group">
+                  <select 
+                    value={currentPage}
+                    onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    disabled={filteredData.length === 0}
+                    className="w-[4.5rem] bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block py-1.5 pl-3 pr-7 outline-none shadow-sm transition-all font-semibold cursor-pointer hover:border-orange-300 hover:bg-orange-50/50 appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {totalPages > 0 ? (
+                      Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <option key={page} value={page}>
+                          {page}
+                        </option>
+                      ))
+                    ) : (
+                      <option value={1}>1</option>
+                    )}
+                  </select>
+                  <div className="absolute right-2.5 pointer-events-none text-slate-400 group-hover:text-orange-500 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+
               </div>
 
               <div className="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
                 <button 
                   onClick={handlePrevPage}
-                  disabled={currentPage === 1}
+                  disabled={currentPage === 1 || filteredData.length === 0}
                   className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${
-                    currentPage === 1 ? 'text-slate-300 cursor-not-allowed' : 'text-slate-600 hover:bg-indigo-50 hover:text-orange-600'
+                    currentPage === 1 || filteredData.length === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <span className="text-sm font-medium text-slate-600 min-w-[4rem] text-center whitespace-nowrap">
-                  <span className="font-bold text-slate-800">{currentPage}</span> / {totalPages}
+                  <span className="font-bold text-slate-800">{totalPages === 0 ? 0 : currentPage}</span> / {totalPages}
                 </span>
                 <button 
                   onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || filteredData.length === 0}
                   className={`p-1.5 rounded-lg transition-all flex items-center justify-center ${
-                    currentPage === totalPages ? 'text-slate-300 cursor-not-allowed' : 'text-slate-600 hover:bg-indigo-50 hover:text-orange-600'
+                    currentPage === totalPages || filteredData.length === 0 ? 'text-slate-300 cursor-not-allowed' : 'text-slate-600 hover:bg-orange-50 hover:text-orange-600'
                   }`}
                 >
                   <ChevronRight size={18} />

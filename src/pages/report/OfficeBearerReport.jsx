@@ -13,10 +13,9 @@ const OfficeBearerReport = () => {
   // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [jumpPage, setJumpPage] = useState('');
 
   // --- CALCS ---
-  const totalPages = Math.ceil(bearerData.length / itemsPerPage);
+  const totalPages = Math.ceil(bearerData.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = bearerData.slice(indexOfFirstItem, indexOfLastItem);
@@ -25,15 +24,6 @@ const OfficeBearerReport = () => {
   const handleNextPage = () => { if (currentPage < totalPages) setCurrentPage(currentPage + 1); };
   const handlePrevPage = () => { if (currentPage > 1) setCurrentPage(currentPage - 1); };
   const handleRowsChange = (e) => { setItemsPerPage(Number(e.target.value)); setCurrentPage(1); };
-  const handleJumpPage = (e) => {
-    if (e.key === 'Enter') {
-      let page = parseInt(jumpPage);
-      if (page >= 1 && page <= totalPages) setCurrentPage(page);
-      else if (page > totalPages) setCurrentPage(totalPages);
-      else if (page < 1) setCurrentPage(1);
-      setJumpPage('');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-6 md:p-10 font-sans">
@@ -100,7 +90,7 @@ const OfficeBearerReport = () => {
                       </td>
                       <td className="py-4 px-6 text-center align-middle">
                         <div className="flex items-center justify-center gap-3">
-                          <button className="text-slate-400 hover:text-blue-600 transition-colors p-1" title="Edit">
+                          <button className="text-slate-400 hover:text-[#f05a28] transition-colors p-1" title="Edit">
                             <Edit size={18} strokeWidth={2.5} />
                           </button>
                           <button className="text-slate-400 hover:text-red-600 transition-colors p-1" title="Delete">
@@ -142,36 +132,53 @@ const OfficeBearerReport = () => {
             <div className="flex items-center justify-between lg:justify-end gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-500 font-medium hidden sm:inline-block whitespace-nowrap">Go to:</span>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max={totalPages}
-                  value={jumpPage}
-                  onChange={(e) => setJumpPage(e.target.value)}
-                  onKeyDown={handleJumpPage}
-                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#f05a28] focus:border-[#f05a28] block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300"
-                  placeholder="Pg"
-                />
+                
+                {/* Edunut UI Design Dropdown (Orange Theme) */}
+                <div className="relative flex items-center group">
+                  <select 
+                    value={currentPage}
+                    onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    disabled={bearerData.length === 0}
+                    className="w-[4.5rem] bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-[#f05a28] focus:border-[#f05a28] block py-1.5 pl-3 pr-7 outline-none shadow-sm transition-all font-semibold cursor-pointer hover:border-orange-300 hover:bg-orange-50/50 appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {totalPages > 0 ? (
+                      Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <option key={page} value={page}>
+                          {page}
+                        </option>
+                      ))
+                    ) : (
+                      <option value={1}>1</option>
+                    )}
+                  </select>
+                  {/* Custom aligned arrow icon */}
+                  <div className="absolute right-2.5 pointer-events-none text-slate-400 group-hover:text-[#f05a28] transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+
               </div>
 
               <div className="flex items-center gap-2">
                 <button 
                   onClick={handlePrevPage}
-                  disabled={currentPage === 1}
+                  disabled={currentPage === 1 || bearerData.length === 0}
                   className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${
-                    currentPage === 1 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#f05a28] shadow-sm'
+                    currentPage === 1 || bearerData.length === 0 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#f05a28] shadow-sm'
                   }`}
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <span className="text-sm font-medium text-slate-600 min-w-[4rem] text-center whitespace-nowrap">
-                  <span className="font-bold text-slate-800">{currentPage}</span> / {totalPages}
+                  <span className="font-bold text-slate-800">{bearerData.length === 0 ? 0 : currentPage}</span> / {totalPages}
                 </span>
                 <button 
                   onClick={handleNextPage}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || bearerData.length === 0}
                   className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${
-                    currentPage === totalPages ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#f05a28] shadow-sm'
+                    currentPage === totalPages || bearerData.length === 0 ? 'border-slate-200 text-slate-300 bg-slate-50 cursor-not-allowed' : 'border-slate-200 text-slate-600 bg-white hover:bg-slate-50 hover:text-[#f05a28] shadow-sm'
                   }`}
                 >
                   <ChevronRight size={18} />

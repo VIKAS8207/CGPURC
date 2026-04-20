@@ -27,10 +27,9 @@ const StudentEnrolledReport = () => {
   // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [jumpPage, setJumpPage] = useState('');
 
   // --- CALCS ---
-  const totalPages = Math.ceil(enrolmentData.length / itemsPerPage);
+  const totalPages = Math.ceil(enrolmentData.length / itemsPerPage) || 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = enrolmentData.slice(indexOfFirstItem, indexOfLastItem);
@@ -47,16 +46,6 @@ const StudentEnrolledReport = () => {
   const handleRowsChange = (e) => {
     setItemsPerPage(Number(e.target.value));
     setCurrentPage(1);
-  };
-
-  const handleJumpPage = (e) => {
-    if (e.key === 'Enter') {
-      let page = parseInt(jumpPage);
-      if (page >= 1 && page <= totalPages) setCurrentPage(page);
-      else if (page > totalPages) setCurrentPage(totalPages);
-      else if (page < 1) setCurrentPage(1);
-      setJumpPage('');
-    }
   };
 
   return (
@@ -150,16 +139,28 @@ const StudentEnrolledReport = () => {
             <div className="flex items-center justify-between lg:justify-end gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-slate-500 font-medium hidden sm:inline-block">Go to:</span>
-                <input 
-                  type="number" 
-                  min="1" 
-                  max={totalPages}
-                  value={jumpPage}
-                  onChange={(e) => setJumpPage(e.target.value)}
-                  onKeyDown={handleJumpPage}
-                  className="w-16 bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-1.5 text-center outline-none shadow-sm transition-all font-medium placeholder:text-slate-400 hover:border-slate-300"
-                  placeholder="Pg"
-                />
+                
+                {/* Replaced input with styled dropdown per requested Edunut UI Design */}
+                <div className="relative flex items-center group">
+                  <select 
+                    value={currentPage}
+                    onChange={(e) => setCurrentPage(Number(e.target.value))}
+                    className="w-[4.5rem] bg-white border border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-1.5 pl-3 pr-7 outline-none shadow-sm transition-all font-semibold cursor-pointer hover:border-blue-300 hover:bg-blue-50/50 appearance-none"
+                  >
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <option key={page} value={page}>
+                        {page}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Custom aligned arrow icon */}
+                  <div className="absolute right-2.5 pointer-events-none text-slate-400 group-hover:text-blue-500 transition-colors">
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+
               </div>
 
               <div className="flex items-center gap-2">
