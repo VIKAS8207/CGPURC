@@ -6,7 +6,7 @@ import {
   ChevronLeft, ChevronRight, ChevronDown, AlertTriangle,
   CheckCircle2, X, Plus, PieChart, Layers, Check, Calculator,
   ShieldCheck, MoreVertical, IndianRupee, Users, Calendar, 
-  FileCheck, RefreshCcw, Hash, User
+  FileCheck, RefreshCcw, Hash, User, CalendarDays
 } from 'lucide-react';
 
 const StudentFeesUpload = () => {
@@ -20,16 +20,16 @@ const StudentFeesUpload = () => {
   const [bulkStatus, setBulkStatus] = useState('idle');
   const [selectedFile, setSelectedFile] = useState(null);
   const [isProcessed, setIsProcessed] = useState(false);
-  const [viewModalData, setViewModalData] = useState(null); // <--- Added for View Popup
+  const [viewModalData, setViewModalData] = useState(null);
 
   // --- FORM STATES ---
   const [manualData, setManualData] = useState({ 
     course: '', 
     branch: '', 
     enrollmentNo: '', 
-    amount: '', 
-    month: '', 
-    date: '' 
+    semester: '',
+    paymentDate: '',
+    amountPaid: ''
   });
 
   const [bulkConfig, setBulkConfig] = useState({ course: '', branch: '' });
@@ -37,6 +37,7 @@ const StudentFeesUpload = () => {
   // Mock Data for Dropdowns
   const courseList = ["B.Tech", "M.Tech", "MBA", "BCA"];
   const branchList = ["Computer Science", "Mechanical", "Civil", "Electronics"];
+  const semesterList = ["Semester 1", "Semester 2", "Semester 3", "Semester 4", "Semester 5", "Semester 6", "Semester 7", "Semester 8"];
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   // Table Data updated with Entity & Record breakdown
@@ -266,37 +267,90 @@ const StudentFeesUpload = () => {
           {uploadMode === 'manual' ? (
             <form onSubmit={handleManualSubmit} className="animate-in slide-in-from-left-4 duration-300 text-left">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 text-left">
+                
+                {/* Course Dropdown */}
                 <div className="relative dropdown-container z-[40]">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Course</label>
-                  <button type="button" onClick={() => setOpenDropdown(openDropdown === 'mCourse' ? null : 'mCourse')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
+                  <button type="button" onClick={() => setOpenDropdown(openDropdown === 'mCourse' ? null : 'mCourse')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px] focus:ring-2 focus:ring-[#FF6900]/20 border border-transparent focus:border-[#FF6900]/50 transition-all">
                     <span>{manualData.course || "Select Course"}</span>
-                    <ChevronDown size={16} className="text-slate-400" />
+                    <ChevronDown size={16} className={`text-slate-400 transition-transform ${openDropdown === 'mCourse' ? 'rotate-180' : ''}`} />
                   </button>
                   {openDropdown === 'mCourse' && (
                     <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100 overflow-hidden">
-                      {courseList.map(c => <button key={c} type="button" onClick={() => handleManualCustomSelect('course', c)} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{c}</button>)}
+                      {courseList.map(c => <button key={c} type="button" onClick={() => handleManualCustomSelect('course', c)} className="w-full text-left px-4 py-3 text-sm font-medium hover:bg-orange-50 hover:text-[#FF6900] transition-colors">{c}</button>)}
                     </div>
                   )}
                 </div>
 
+                {/* Branch Dropdown */}
                 <div className="relative dropdown-container z-[30]">
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Branch</label>
-                  <button type="button" onClick={() => setOpenDropdown(openDropdown === 'mBranch' ? null : 'mBranch')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px]">
+                  <button type="button" onClick={() => setOpenDropdown(openDropdown === 'mBranch' ? null : 'mBranch')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px] focus:ring-2 focus:ring-[#FF6900]/20 border border-transparent focus:border-[#FF6900]/50 transition-all">
                     <span>{manualData.branch || "Select Branch"}</span>
-                    <ChevronDown size={16} className="text-slate-400" />
+                    <ChevronDown size={16} className={`text-slate-400 transition-transform ${openDropdown === 'mBranch' ? 'rotate-180' : ''}`} />
                   </button>
                   {openDropdown === 'mBranch' && (
                     <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100 overflow-hidden">
-                      {branchList.map(b => <button key={b} type="button" onClick={() => handleManualCustomSelect('branch', b)} className="w-full text-left px-4 py-3 text-sm hover:bg-orange-50 hover:text-[#FF6900]">{b}</button>)}
+                      {branchList.map(b => <button key={b} type="button" onClick={() => handleManualCustomSelect('branch', b)} className="w-full text-left px-4 py-3 text-sm font-medium hover:bg-orange-50 hover:text-[#FF6900] transition-colors">{b}</button>)}
                     </div>
                   )}
                 </div>
 
+                {/* Enrollment Number */}
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">Enrollment / Registration No.</label>
                   <div className="relative h-[50px]">
                     <Hash size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                    <input type="text" placeholder="e.g. ENR12345" className="w-full pl-11 pr-4 h-full bg-slate-50 rounded-[10px] font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#FF6900]/20" />
+                    <input 
+                      type="text" 
+                      placeholder="e.g. ENR12345" 
+                      value={manualData.enrollmentNo}
+                      onChange={(e) => setManualData({...manualData, enrollmentNo: e.target.value})}
+                      className="w-full pl-11 pr-4 h-full bg-slate-50 border border-transparent rounded-[10px] font-medium text-slate-800 outline-none focus:bg-white focus:border-[#FF6900]/50 focus:ring-2 focus:ring-[#FF6900]/20 transition-all placeholder:text-slate-400" 
+                    />
+                  </div>
+                </div>
+
+                {/* Semester Dropdown */}
+                <div className="relative dropdown-container z-[20]">
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Semester</label>
+                  <button type="button" onClick={() => setOpenDropdown(openDropdown === 'mSemester' ? null : 'mSemester')} className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 rounded-[10px] font-medium text-slate-800 outline-none h-[50px] focus:ring-2 focus:ring-[#FF6900]/20 border border-transparent focus:border-[#FF6900]/50 transition-all">
+                    <span>{manualData.semester || "Select Semester"}</span>
+                    <ChevronDown size={16} className={`text-slate-400 transition-transform ${openDropdown === 'mSemester' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {openDropdown === 'mSemester' && (
+                    <div className="absolute left-0 right-0 top-[calc(100%+8px)] bg-white rounded-[10px] shadow-xl z-50 border border-slate-100 overflow-hidden max-h-60 overflow-y-auto">
+                      {semesterList.map(s => <button key={s} type="button" onClick={() => handleManualCustomSelect('semester', s)} className="w-full text-left px-4 py-3 text-sm font-medium hover:bg-orange-50 hover:text-[#FF6900] transition-colors">{s}</button>)}
+                    </div>
+                  )}
+                </div>
+
+                {/* Payment Date */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Submission Date</label>
+                  <div className="relative h-[50px]">
+                    <CalendarDays size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <input 
+                      type="date" 
+                      value={manualData.paymentDate}
+                      onChange={(e) => setManualData({...manualData, paymentDate: e.target.value})}
+                      className="w-full pl-11 pr-4 h-full bg-slate-50 border border-transparent rounded-[10px] font-medium text-slate-800 outline-none focus:bg-white focus:border-[#FF6900]/50 focus:ring-2 focus:ring-[#FF6900]/20 transition-all" 
+                    />
+                  </div>
+                </div>
+
+                {/* Amount Paid */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">Amount Paid</label>
+                  <div className="relative h-[50px]">
+                    <IndianRupee size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input 
+                      type="number" 
+                      placeholder="0.00" 
+                      value={manualData.amountPaid}
+                      onChange={(e) => setManualData({...manualData, amountPaid: e.target.value})}
+                      className="w-full pl-11 pr-4 h-full bg-slate-50 border border-transparent rounded-[10px] font-medium text-slate-800 outline-none focus:bg-white focus:border-[#FF6900]/50 focus:ring-2 focus:ring-[#FF6900]/20 transition-all placeholder:text-slate-400" 
+                    />
                   </div>
                 </div>
               </div>
@@ -362,7 +416,7 @@ const StudentFeesUpload = () => {
                 <td className="py-4 px-6">
                   <div className="font-bold text-slate-800 text-sm">{item.course} - {item.branch}</div>
                   <div className="text-[11px] font-black text-[#FF6900] flex items-center gap-1.5 mt-1">
-                     ₹ {Number(item.totalFeesAmount).toLocaleString('en-IN')} collected
+                      ₹ {Number(item.totalFeesAmount).toLocaleString('en-IN')} collected
                   </div>
                 </td>
                 <td className="py-4 px-6">

@@ -49,6 +49,9 @@ import StudentListReport from './pages/report/StudentListReport';
 import OfficeBearerReport from './pages/report/OfficeBearerReport';
 import StudentFeesDetailsReport from './pages/report/StudentFeesDetailsReport';
 
+// 👇 1. IMPORT ADDED HERE 👇
+import MonthlyCourseFeesDetails from './pages/report/MonthlyCourseFeesDetails';
+
 
 function App() {
   return (
@@ -69,6 +72,9 @@ function App() {
           <Route path="/reports/student-list" element={<StudentListReport />} />
           <Route path="/reports/office-bearers-list" element={<OfficeBearerReport />} />
           <Route path="/reports/student-fees-details" element={<StudentFeesDetailsReport />} />
+          
+          {/* 👇 2. ROUTE ADDED HERE 👇 */}
+          <Route path="/fees-details/:year/:month" element={<MonthlyCourseFeesDetails />} />
           
           {/* Admin Routes (Wrapped in Blue Layout) */}
           <Route element={<DashboardLayout />}>

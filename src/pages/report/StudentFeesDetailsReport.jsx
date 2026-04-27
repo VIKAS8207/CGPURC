@@ -124,14 +124,24 @@ const StudentFeesDetailsReport = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {currentItems.map((row) => (
-                  <tr key={row.sno} className="hover:bg-orange-50/50 transition-colors group">
-                    <td className="py-4 px-6 text-sm font-medium text-slate-500">{row.sno}</td>
-                    <td className="py-4 px-6 text-sm font-bold text-orange-600 hover:text-orange-700 cursor-pointer transition-colors border-l border-r border-transparent group-hover:border-orange-100">{row.month}</td>
-                    <td className="py-4 px-6 text-sm text-slate-600">{row.year}</td>
-                    <td className="py-4 px-6 text-sm font-medium text-slate-700 text-right">{row.amount}</td>
-                  </tr>
-                ))}
+  {currentItems.map((row) => (
+    <tr key={row.sno} className="hover:bg-orange-50/50 transition-colors group">
+      <td className="py-4 px-6 text-sm font-medium text-slate-500">{row.sno}</td>
+      
+      {/* REPLACED LINE HERE */}
+      <td className="py-4 px-6 text-sm font-bold border-l border-r border-transparent group-hover:border-orange-100">
+        <Link 
+          to={`/fees-details/${row.year}/${row.month}`} 
+          className="text-orange-600 hover:text-orange-700 hover:underline underline-offset-2 transition-colors cursor-pointer block"
+        >
+          {row.month}
+        </Link>
+      </td>
+      
+      <td className="py-4 px-6 text-sm text-slate-600">{row.year}</td>
+      <td className="py-4 px-6 text-sm font-medium text-slate-700 text-right">{row.amount}</td>
+    </tr>
+  ))}
                 {currentItems.length === 0 && (
                   <tr>
                     <td colSpan="4" className="py-8 text-center text-sm text-slate-500">
