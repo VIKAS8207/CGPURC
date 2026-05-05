@@ -48,21 +48,47 @@ const AdminDashboard = () => {
     { month: 'Mar', amount: 22.4 },
   ];
 
-  // Certificate Verification Pie Chart (Semantic colors adjusted to fit the cool theme)
+  // Certificate Verification Pie Chart Data
   const certificateData = [
     { name: 'Verified', value: 8450, color: '#0ea5e9' }, // Sky Blue
     { name: 'Pending', value: 2340, color: '#6366f1' },  // Indigo
     { name: 'Rejected', value: 420, color: '#0f172a' }   // Slate 900
   ];
 
+  // Calculate total for percentages
+  const totalCertificates = certificateData.reduce((sum, item) => sum + item.value, 0);
+
+  // Custom Legend to show on the right side
+  const renderCustomLegend = (props) => {
+    const { payload } = props;
+    return (
+      <ul className="flex flex-col gap-4 pl-4">
+        {payload.map((entry, index) => {
+          const percent = ((entry.payload.value / totalCertificates) * 100).toFixed(1);
+          return (
+            <li key={`item-${index}`} className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: entry.color }} />
+              <div>
+                <p className="text-sm font-black text-blue-950 leading-none">{entry.value}</p>
+                <p className="text-[11px] font-bold text-slate-500 mt-1">
+                  {percent}% <span className="font-medium opacity-60">({entry.payload.value.toLocaleString()})</span>
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
   // Custom Tooltip for the AreaChart
   const CustomAreaTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white/90 p-4 rounded-xl shadow-xl shadow-blue-900/10 border border-white/50 backdrop-blur-md">
-          <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-1">{label} {selectedYear.split('-')[0]}</p>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">{label} {selectedYear.split('-')[0]}</p>
           <p className="text-2xl font-black text-blue-950 tracking-tighter">
-            ₹{payload[0].value}<span className="text-sm font-medium text-blue-500 tracking-normal">L</span>
+            ₹{payload[0].value}<span className="text-sm font-medium text-slate-500 tracking-normal">L</span>
           </p>
           <p className="text-[10px] font-bold text-cyan-600 mt-1 flex items-center gap-1">
             <TrendingUp size={12} /> Fee Collected
@@ -74,8 +100,8 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="relative animate-in fade-in duration-700 pb-10 bg-[##F8FAFC] min-h-screen overflow-hidden">
-
+    <div className="relative animate-in fade-in duration-700 pb-10 bg-[#F8FAFC] min-h-screen overflow-hidden">
+      
       <div className="relative z-10">
         {/* 1. ADMIN PREMIUM HEADER */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pt-8 px-6 lg:px-8">
@@ -83,10 +109,10 @@ const AdminDashboard = () => {
             <h1 className="text-3xl font-black text-blue-950 tracking-tight flex items-center gap-3">
               University Regulatory Dashboard
             </h1>
-            <p className="text-blue-600/70 font-medium mt-1">Central Command Center • <span className="text-blue-600 font-bold">Admin Mode</span></p>
+            <p className="text-slate-500 font-medium mt-1">Central Command Center • <span className="text-blue-600 font-bold">Admin Mode</span></p>
           </div>
           <div className="flex items-center gap-3">
-              <button className="p-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-xl text-blue-400 hover:text-blue-600 hover:shadow-lg hover:shadow-blue-900/5 transition-all">
+              <button className="p-3 bg-white/60 backdrop-blur-md border border-white/80 rounded-xl text-slate-500 hover:text-blue-600 hover:shadow-lg hover:shadow-blue-900/5 transition-all">
                   <Bell size={20} />
               </button>
               <div className="h-10 w-px bg-blue-200/50 mx-2"></div>
@@ -101,7 +127,7 @@ const AdminDashboard = () => {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent rounded-bl-full pointer-events-none"></div>
                 <div className="flex justify-between items-start relative z-10">
                   <div>
-                    <p className="text-[10px] font-black text-blue-400/80 uppercase tracking-[0.2em] mb-1">{stat.title}</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">{stat.title}</p>
                     <h3 className="text-3xl font-black text-blue-950 tracking-tighter">{stat.value}</h3>
                   </div>
                   <div className={`p-3 ${stat.bg} ${stat.color} rounded-2xl border border-white/50 shadow-sm`}>
@@ -112,7 +138,7 @@ const AdminDashboard = () => {
                   <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${stat.color} ${stat.bg} border border-white/50`}>
                     {stat.change}
                   </span>
-                  <span className="text-[10px] font-bold text-blue-400 uppercase">System Status</span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">System Status</span>
                 </div>
               </div>
             ))}
@@ -144,9 +170,9 @@ const AdminDashboard = () => {
                               </div>
                               <div>
                                   <p className="font-black text-blue-950 tracking-tight">{action.name}</p>
-                                  <p className="text-xs font-medium text-blue-500/70 mt-0.5">{action.desc}</p>
+                                  <p className="text-xs font-medium text-slate-500 mt-0.5">{action.desc}</p>
                               </div>
-                              <ArrowUpRight size={18} className="ml-auto text-blue-300 group-hover:text-blue-600 transition-colors" />
+                              <ArrowUpRight size={18} className="ml-auto text-slate-400 group-hover:text-blue-600 transition-colors" />
                           </button>
                       ))}
                   </div>
@@ -154,17 +180,25 @@ const AdminDashboard = () => {
 
                 {/* 3.5 FEE COLLECTION GRAPH WIDGET */}
                 <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-lg shadow-blue-900/5 p-6 relative overflow-hidden">
-                   
                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                       <div>
                         <h3 className="text-lg font-black text-blue-950 uppercase tracking-tighter flex items-center gap-2">
                           <BarChart3 size={20} className="text-blue-600" />
                           Monthly Fee Collection
                         </h3>
-                        <p className="text-xs font-medium text-blue-500/70 mt-1">Aggregated 1% fees across all active universities</p>
+                        <p className="text-xs font-medium text-slate-500 mt-1">Aggregated 1% fees across all active universities</p>
                       </div>
                       
-                      
+                      {/* Academic Year Selector */}
+                      <select 
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(e.target.value)}
+                        className="bg-white/80 backdrop-blur-md border border-slate-200 text-slate-700 text-sm font-bold rounded-2xl focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none cursor-pointer shadow-sm"
+                      >
+                        <option value="2025-2026">AY 2025 - 2026</option>
+                        <option value="2024-2025">AY 2024 - 2025</option>
+                        <option value="2023-2024">AY 2023 - 2024</option>
+                      </select>
                    </div>
 
                    <div className="h-[320px] w-full">
@@ -209,7 +243,7 @@ const AdminDashboard = () => {
                 <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 shadow-lg shadow-blue-900/5 overflow-hidden">
                     <div className="px-6 py-5 border-b border-blue-50 flex items-center justify-between bg-white/40">
                         <h3 className="font-black text-blue-950 uppercase text-xs tracking-widest">Admin Audit Logs</h3>
-                        <History size={16} className="text-blue-400" />
+                        <History size={16} className="text-slate-400" />
                     </div>
                     <div className="divide-y divide-blue-50/50">
                         {[
@@ -224,10 +258,10 @@ const AdminDashboard = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm font-bold text-blue-950">{item.action}</p>
-                                        <p className="text-xs font-medium text-blue-500/80">{item.user}</p>
+                                        <p className="text-xs font-medium text-slate-500">{item.user}</p>
                                     </div>
                                 </div>
-                                <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">{item.time}</span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">{item.time}</span>
                             </div>
                         ))}
                     </div>
@@ -242,7 +276,6 @@ const AdminDashboard = () => {
                 
                 {/* Deep Ocean Blue Command Card */}
                 <div className="bg-gradient-to-br from-blue-900 to-blue-950 rounded-3xl p-6 text-white relative overflow-hidden shadow-xl shadow-blue-900/20 border border-blue-800">
-                    {/* Glass glare effect */}
                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
                     
                     <div className="relative z-10">
@@ -250,14 +283,14 @@ const AdminDashboard = () => {
                             <Settings size={18} className="text-blue-300" />
                             Master Controls
                         </h4>
-                        <p className="text-blue-200/60 text-xs mb-6">Global University Configuration</p>
+                        <p className="text-slate-300 text-xs mb-6">Global University Configuration</p>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between text-sm border-b border-blue-800/50 pb-3">
-                                <span className="font-medium text-blue-200">Registered Univ.</span>
+                                <span className="font-medium text-slate-300">Registered Univ.</span>
                                 <span className="font-bold text-white">17 Active</span>
                             </div>
                             <div className="flex items-center justify-between text-sm border-b border-blue-800/50 pb-3">
-                                <span className="font-medium text-blue-200">Master Sessions</span>
+                                <span className="font-medium text-slate-300">Master Sessions</span>
                                 <span className="font-bold text-white">2025 - 2026</span>
                             </div>
                         </div>
@@ -271,24 +304,27 @@ const AdminDashboard = () => {
                     <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/20 rounded-full blur-3xl"></div>
                 </div>
 
-                {/* Certificate Verification Pie Chart */}
+                {/* UPDATED: Certificate Verification Pie Chart */}
                 <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/80 p-6 shadow-lg shadow-blue-900/5">
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-100/50 text-blue-600 rounded-xl border border-white/50">
                             <FileSearch size={20} />
                         </div>
                         <div>
                           <h4 className="font-black text-blue-950 uppercase text-xs tracking-widest">Certificate Status</h4>
-                          <p className="text-[10px] font-medium text-blue-500/70">Current Academic Year</p>
+                          <p className="text-[10px] font-medium text-slate-500">Current Academic Year Breakdown</p>
                         </div>
                     </div>
                     
-                    <div className="h-[220px] w-full mt-2">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
+                    {/* CHANGED: Made w-full and added Recharts margins to center the contents perfectly */}
+                    <div className="h-[220px] w-full">
+                      <ResponsiveContainer width="90%" height="100%">
+                        <PieChart margin={{ top: 0, right: 10, bottom: 0, left: 0 }}>
                           <Pie
                             data={certificateData}
-                            innerRadius={65}
+                            cx="45%" 
+                            cy="50%"
+                            innerRadius={60}
                             outerRadius={85}
                             paddingAngle={5}
                             dataKey="value"
@@ -304,10 +340,11 @@ const AdminDashboard = () => {
                             itemStyle={{ color: '#172554', fontWeight: '900', fontSize: '14px' }}
                           />
                           <Legend 
-                            verticalAlign="bottom" 
-                            height={36} 
-                            iconType="circle" 
-                            wrapperStyle={{ fontSize: '11px', fontWeight: 'bold', color: '#475569', paddingTop: '10px' }} 
+                            content={renderCustomLegend}
+                            layout="vertical"
+                            verticalAlign="middle"
+                            align="right"
+                            wrapperStyle={{ paddingRight: '10px' }} // Nudges the text slightly inwards for perfect balance
                           />
                         </PieChart>
                       </ResponsiveContainer>
@@ -318,7 +355,7 @@ const AdminDashboard = () => {
                 <div className="bg-gradient-to-b from-blue-50/80 to-blue-100/30 backdrop-blur-md border border-blue-100 rounded-3xl p-6 text-center shadow-inner">
                     <ShieldCheck size={32} className="text-blue-600 mx-auto mb-3" />
                     <h5 className="font-black text-blue-950 text-sm">Secure Instance</h5>
-                    <p className="text-blue-700/70 text-[10px] font-medium mt-1 mb-4 leading-relaxed italic">
+                    <p className="text-slate-600 text-[10px] font-medium mt-1 mb-4 leading-relaxed italic">
                         All administrative actions are logged under Government Compliance Protocols.
                     </p>
                     <button className="text-xs font-black text-blue-600 uppercase tracking-widest hover:text-blue-800 hover:underline transition-colors">
