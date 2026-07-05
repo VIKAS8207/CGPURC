@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Users, BookOpen, Settings, 
   Bell, Search, Menu, ChevronDown, ChevronRight, FileText,
-  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School, BarChart3, FileCheck2
+  LogOut, ChevronsLeft, Calendar, Database, Briefcase, School, Files, BarChart3, FileCheck2
 } from 'lucide-react';
 
 const DashboardLayout = () => {
@@ -137,6 +137,11 @@ const DashboardLayout = () => {
             <FileCheck2 size={20} className={isActive('/admin/verify-certificates') ? 'text-blue-600' : 'text-slate-400'} />
             {isSidebarOpen && <span>Verify Certificates</span>}
           </Link>
+
+          <Link to="/admin/duplicate-requests" className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${isActive('/admin/duplicate-requests') ? 'bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}>
+  <Files size={20} className={isActive('/admin/duplicate-requests') ? 'text-blue-600' : 'text-slate-400'} />
+  {isSidebarOpen && <span>Duplicate Requests</span>}
+</Link>
 
           {/* REPORTS DROPDOWN */}
           <div>

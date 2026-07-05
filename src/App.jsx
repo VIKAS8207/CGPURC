@@ -51,6 +51,8 @@ import StudentFeesDetailsReport from './pages/report/StudentFeesDetailsReport';
 
 // 👇 1. IMPORT ADDED HERE 👇
 import MonthlyCourseFeesDetails from './pages/report/MonthlyCourseFeesDetails';
+import DuplicateRequests from './pages/admin/DuplicateRequests'
+import VerifyDuplicateRequest from './pages/user/VerifyDuplicateRequest';
 
 
 function App() {
@@ -89,6 +91,7 @@ function App() {
             <Route path="/admin/master/due-date-config" element={<DueDateConfig />} />
             <Route path="/admin/office-bearers" element={<AdminOfficeBearer />} />
             <Route path="/admin/verify-certificates" element={<CertificateVerification />} />
+            <Route path="/admin/duplicate-requests" element={<DuplicateRequests />} />
             {/* Add more admin pages here like /admin-settings, /payroll, etc. */}
           </Route>
 
@@ -109,6 +112,7 @@ function App() {
             <Route path="/upload-fees" element={<StudentFeesUpload />} />
             <Route path="/user/student-promotion" element={<StudentPromotion />} />
             <Route path="user-dashboard" element={<UserDashboard />} />
+            <Route path="/user/verify-duplicate-requests" element={<VerifyDuplicateRequest />} />
             {/* You can add more user pages here later like /my-courses, /grades */} 
           </Route>
           
